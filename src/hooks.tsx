@@ -14,9 +14,8 @@ export const useRequestAudioHook = () => {
 };
 
 export const useInitializeAgora = () => {
-  const appId = '55c2ac98a7314b68898970f4a24fdfd2';
-  const token =
-    '00655c2ac98a7314b68898970f4a24fdfd2IABmREP4rZgZKaYZJ2ReMzODeG5L2x0I1/UQunpne+etKvmPd2EAAAAAEAC4541oDZPvYAEAAQAMk+9g';
+  const appId = '9747a594ebdd486c948da607b25aa21c';
+  const token = '';
 
   const [channelName, setChannelName] = useState('');
   const [joinSucceed, setJoinSucceed] = useState(false);

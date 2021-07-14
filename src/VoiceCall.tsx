@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -13,8 +13,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Stopwatch } from 'react-native-stopwatch-timer';
+import { AppNavigationProps } from './navigation/routes';
 
-const App = ({ navigation }) => {
+const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
   const {
     channelName,
@@ -33,8 +34,8 @@ const App = ({ navigation }) => {
 
   return (
     <ImageBackground
-      blurRadius={8}
-      source={require('./assets/background.png')}
+      blurRadius={3}
+      source={require('./assets/background.jpeg')}
       style={styles.container}>
       <View style={styles.box1}>
         {joinSucceed ? (
@@ -91,8 +92,8 @@ const App = ({ navigation }) => {
             )}
           </TouchableOpacity>
           <View style={styles.floatRight}>
-            <TouchableOpacity onPress={() => navigation.navigate('VideoCall')}>
-              <Ionicons name="videocam" size={35} color="#fff" />
+            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+              <Ionicons name="home" size={35} color="#fff" />
             </TouchableOpacity>
           </View>
           <TouchableOpacity
@@ -125,7 +126,7 @@ const App = ({ navigation }) => {
     </ImageBackground>
   );
 };
-export default App;
+export default VoiceCall;
 
 const options = {
   container: {
