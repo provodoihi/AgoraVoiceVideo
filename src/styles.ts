@@ -16,6 +16,7 @@ export default StyleSheet.create({
     color: '#fff',
   },
   box1: {
+    marginTop: '3%',
     flex: 1.2,
     alignItems: 'center',
   },
@@ -23,6 +24,7 @@ export default StyleSheet.create({
     flex: 1,
   },
   callBox: {
+    marginBottom: '10%',
     flex: 1,
     alignItems: 'center',
     width: '100%',
@@ -52,9 +54,9 @@ export default StyleSheet.create({
     backgroundColor: 'transparent',
     borderWidth: 1,
     borderColor: '#fff',
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
   },
   usersListContainer: {
     flex: 1,

@@ -1,24 +1,30 @@
 import * as React from 'react';
-import { View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import VoiceCall from '../VoiceCall';
 import VideoCall from '../VideoCall';
+import { AppRoutes } from './routes';
+import Home from '../Home';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<AppRoutes>();
 
 const AppContainer = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="VoiceCall">
+      <Stack.Navigator initialRouteName="Home">
         <Stack.Screen
           options={{ headerShown: false }}
-          name="VoiceCall"
+          name="Home"
+          component={Home}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="Voice"
           component={VoiceCall}
         />
         <Stack.Screen
           options={{ headerShown: false }}
-          name="VideoCall"
+          name="Video"
           component={VideoCall}
         />
       </Stack.Navigator>
