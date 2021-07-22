@@ -17,7 +17,7 @@ export const useInitializeAgora = () => {
   const appId = '9747a594ebdd486c948da607b25aa21c';
   const token = '';
 
-  const [channelName, setChannelName] = useState('');
+  const [channelName, setChannelName] = useState('Test');
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState([]);
   const [isMute, setIsMute] = useState(false);
