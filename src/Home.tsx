@@ -5,7 +5,6 @@ import {
   ImageBackground,
   Text,
   Image,
-  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -34,15 +33,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     }
   };
 
-  useEffect(() => {
-    requestUserPermission();
-    const unsubscribe = messaging().onMessage(() => {
-      Alert.alert('React Native Call', 'You got a call');
-    });
-    return unsubscribe;
-  }, [requestUserPermission]);
-
-  const displayIncommingCall = () => {
+  const displayIncommingCall = useCallback(() => {
     let callOptions = {
       callerId: '9599ba92-f173-4048-a601-47fde6393a28', // Important uuid must in this format
       ios: {
@@ -70,7 +61,15 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
       navigation.navigate('Voice');
       RNVoipCall.endAllCalls();
     });
-  };
+  }, [navigation]);
+
+  useEffect(() => {
+    requestUserPermission();
+    const unsubscribe = messaging().onMessage(() => {
+      displayIncommingCall();
+    });
+    return unsubscribe;
+  }, [displayIncommingCall, requestUserPermission]);
 
   return (
     <ImageBackground
