@@ -10,6 +10,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
+import RNVoipCall from 'react-native-voip-call';
 import { AppNavigationProps } from './navigation/routes';
 import styles from './stylehome';
 
@@ -19,17 +20,14 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
     if (enabled) {
       getFcmToken();
-      console.log('Authorization status:', authStatus);
     }
   }, []);
 
   const getFcmToken = async () => {
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
-      console.log(fcmToken);
       console.log('Your Firebase Token is:', fcmToken);
     } else {
       console.log('Failed', 'No token received');
@@ -44,6 +42,36 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     return unsubscribe;
   }, [requestUserPermission]);
 
+  const displayIncommingCall = () => {
+    let callOptions = {
+      callerId: '9599ba92-f173-4048-a601-47fde6393a28', // Important uuid must in this format
+      ios: {
+        phoneNumber: '0999999999', // Caller Mobile Number
+        name: 'Test', // caller Name
+        hasVideo: true,
+      },
+      android: {
+        ringtuneSound: false, // default true
+        ringtune: '', // add file inside Project_folder/android/app/res/raw
+        duration: 15000, // default 30000
+        vibration: true, // default is true
+        channel_name: 'test', //
+        notificationId: 123,
+        notificationTitle: 'Incoming Call',
+        notificationBody: 'Calling from Agora',
+        answerActionTitle: 'Answer',
+        declineActionTitle: 'Decline',
+        missedCallTitle: 'Call Missed',
+        missedCallBody: 'You missed a call',
+      },
+    };
+    RNVoipCall.displayIncomingCall(callOptions);
+    RNVoipCall.onCallAnswer(() => {
+      navigation.navigate('Voice');
+      RNVoipCall.endAllCalls();
+    });
+  };
+
   return (
     <ImageBackground
       blurRadius={3}
@@ -54,9 +82,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
         <Text style={styles.txtBig}>Mr.T Call</Text>
       </View>
       <View style={styles.settingBox}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Voice')}
-          style={styles.button}>
+        <TouchableOpacity onPress={displayIncommingCall} style={styles.button}>
           <Icon name="microphone" size={36} color="#fff" />
         </TouchableOpacity>
 
