@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "218611033643",
+    "project_id": "agoraapp-d0c80",
+    "storage_bucket": "agoraapp-d0c80.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:218611033643:android:610365600646ae91c7ec6e",
+        "android_client_info": {
+          "package_name": "com.reactnativeagoraapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "218611033643-ako583dgbmbbkme3cd9gngol55m88ppc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBiu4IO6oTwf3ARoQvr1dHPWojIeDgo74"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "218611033643-ako583dgbmbbkme3cd9gngol55m88ppc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
