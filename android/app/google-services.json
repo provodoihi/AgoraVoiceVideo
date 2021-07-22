@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "289204585634",
+    "project_id": "voicecall-22af1",
+    "storage_bucket": "voicecall-22af1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:289204585634:android:4b1af13baf77589feac3fb",
+        "android_client_info": {
+          "package_name": "com.reactnativeagoraapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "289204585634-a5qm524bf43mfc6hhe1cd186pu5kej5d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.reactnativeagoraapp",
+            "certificate_hash": "38196eeafc5bd16e088393947b6701aeaaf1eb37"
+          }
+        },
+        {
+          "client_id": "289204585634-jmvg5phqbkek5rt1ito888k38gvbn3ac.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOnWw8bYTKqLsACpoHrOteF8YDREwZ4RI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "289204585634-jmvg5phqbkek5rt1ito888k38gvbn3ac.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

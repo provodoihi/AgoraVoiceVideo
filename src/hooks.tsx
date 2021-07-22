@@ -16,6 +16,7 @@ export const useRequestAudioHook = () => {
 export const useInitializeAgora = () => {
   const appId = '9747a594ebdd486c948da607b25aa21c';
   const token = '';
+  // 0067001edec4c95403795105b02af75435bIABU5oMGQzvs0YGecigO2aaVKrp3HixUvPM+FtIi1n21iAx+f9gAAAAAEACXmsVzg5L3YAEAAQCDkvdg
 
   const [channelName, setChannelName] = useState('');
   const [joinSucceed, setJoinSucceed] = useState(false);
@@ -35,7 +36,6 @@ export const useInitializeAgora = () => {
 
     rtcEngine.current?.addListener('UserJoined', (uid, elapsed) => {
       console.log('UserJoined', uid, elapsed);
-
       setPeerIds((peerIdsLocal) => {
         if (peerIdsLocal.indexOf(uid) === -1) {
           return [...peerIdsLocal, uid];
