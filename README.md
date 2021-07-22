@@ -1,2 +1,2 @@
 # AgoraVoiceVideo
-Pet Project For Voice And Video Call. Sponsored by Mister T
+Pet Project For Voice And Video Call using Agora SDK. Sponsored by Mister T ^^
