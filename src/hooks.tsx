@@ -72,7 +72,7 @@ export const useInitializeAgora = () => {
   }, []);
 
   const joinChannel = useCallback(async () => {
-    await rtcEngine.current?.joinChannel(token, channelName, null, 1);
+    await rtcEngine.current?.joinChannel(token, channelName, null, 2);
     setIsStopwatchStart(true);
     setResetStopwatch(false);
   }, [channelName]);
