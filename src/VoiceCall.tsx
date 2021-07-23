@@ -14,6 +14,7 @@ import Icons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import { AppNavigationProps } from './navigation/routes';
+import axios from 'axios';
 
 const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
@@ -31,6 +32,28 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     isStopwatchStart,
     resetStopwatch,
   } = useInitializeAgora();
+
+  const data = {
+    notification: {
+      title: 'Your Title',
+      text: 'Your Text',
+    },
+    to:
+      'device token',
+  };
+
+  const send_noti = (param: boolean) => {
+    if (param === false) {
+      axios.post('https://fcm.googleapis.com/fcm/send', data, {
+        headers: {
+          Authorization:
+            'key= sv key',
+        },
+      });
+    } else {
+      console.log('Not send');
+    }
+  };
 
   return (
     <ImageBackground
@@ -109,7 +132,8 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
         <View style={{ height: 40 }} />
         <View style={styles.callBox}>
           <TouchableOpacity
-            onPress={joinSucceed ? leaveChannel : joinChannel}
+            onPress={() => send_noti(joinSucceed)}
+            onPressIn={joinSucceed ? leaveChannel : joinChannel}
             style={styles.call}>
             <Image
               source={

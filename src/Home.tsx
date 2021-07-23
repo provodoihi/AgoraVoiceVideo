@@ -81,7 +81,9 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
         <Text style={styles.txtBig}>Mr.T Call</Text>
       </View>
       <View style={styles.settingBox}>
-        <TouchableOpacity onPress={displayIncommingCall} style={styles.button}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Voice')}
+          style={styles.button}>
           <Icon name="microphone" size={36} color="#fff" />
         </TouchableOpacity>
 
