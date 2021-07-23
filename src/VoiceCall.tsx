@@ -39,20 +39,16 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
       text: 'Your Text',
     },
     to:
-      'device token',
+      'token',
   };
 
-  const send_noti = (param: boolean) => {
-    if (param === false) {
-      axios.post('https://fcm.googleapis.com/fcm/send', data, {
-        headers: {
-          Authorization:
-            'key= sv key',
-        },
-      });
-    } else {
-      console.log('Not send');
-    }
+  const send_noti = () => {
+    axios.post('https://fcm.googleapis.com/fcm/send', data, {
+      headers: {
+        Authorization:
+          'key=sv key',
+      },
+    });
   };
 
   return (
@@ -131,20 +127,26 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
         </View>
         <View style={{ height: 40 }} />
         <View style={styles.callBox}>
-          <TouchableOpacity
-            onPress={() => send_noti(joinSucceed)}
-            onPressIn={joinSucceed ? leaveChannel : joinChannel}
-            style={styles.call}>
-            <Image
-              source={
-                joinSucceed
-                  ? require('./assets/end-call.png')
-                  : require('./assets/accept-call.png')
-              }
-              resizeMode="contain"
-              style={styles.call}
-            />
-          </TouchableOpacity>
+          {joinSucceed === false ? (
+            <TouchableOpacity
+              onPress={() => send_noti()}
+              onPressIn={joinChannel}
+              style={styles.call}>
+              <Image
+                source={require('./assets/accept-call.png')}
+                resizeMode="contain"
+                style={styles.call}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={leaveChannel} style={styles.call}>
+              <Image
+                source={require('./assets/end-call.png')}
+                resizeMode="contain"
+                style={styles.call}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ImageBackground>
