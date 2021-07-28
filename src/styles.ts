@@ -73,6 +73,15 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  pick: {
+    color: '#9FA5AA',
+    textAlign: 'left',
+    justifyContent: 'center',
+    alignContent: 'flex-start',
+    width: '75%',
+    margin: '2%',
+    paddingLeft: '4%',
+  },
   speaker: {
     height: 40,
     width: 40,
