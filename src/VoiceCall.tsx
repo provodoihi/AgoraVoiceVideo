@@ -2,10 +2,10 @@ import React from 'react';
 import {
   View,
   Text,
-  TextInput,
   Image,
   TouchableOpacity,
   ImageBackground,
+  ToastAndroid,
 } from 'react-native';
 import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import styles from './styles';
@@ -14,17 +14,18 @@ import Icons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import { AppNavigationProps } from './navigation/routes';
+import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
+import { useState } from 'react';
+import { phonex } from './phone_token';
 
 const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
   const {
-    channelName,
     isMute,
     isSpeakerEnable,
     joinSucceed,
     peerIds,
-    setChannelName,
     joinChannel,
     leaveChannel,
     toggleIsMute,
@@ -33,22 +34,21 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     resetStopwatch,
   } = useInitializeAgora();
 
+  // const phonex = require('./phone_token.json');
+
+  const [token_data, setToken] = useState('');
+
   const data = {
-    notification: {
-      title: 'Your Title',
-      text: 'Your Text',
-    },
-    to:
-      'token',
+    message: 'hello',
+    token: token_data,
   };
 
-  const send_noti = () => {
-    axios.post('https://fcm.googleapis.com/fcm/send', data, {
-      headers: {
-        Authorization:
-          'key=sv key',
-      },
-    });
+  const send_noti = async () => {
+    try {
+      await axios.post('http://192.168.1.7:8080/api', data);
+    } catch (error) {
+      ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT);
+    }
   };
 
   return (
@@ -61,13 +61,23 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
           <View />
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
-            <Text style={styles.text}> Channel Name</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => setChannelName(text)}
-              placeholder={'Channel Name'}
-              value={channelName}
-            />
+            <Text style={styles.text}> Calling</Text>
+            <Picker
+              selectedValue={token_data}
+              onValueChange={(value) => setToken(value)}
+              style={styles.pick}
+              dropdownIconColor="#9FA5AA">
+              <Picker.Item label="Choose User To Call" value="" />
+              {phonex.map((item) => {
+                return (
+                  <Picker.Item
+                    key={item.id}
+                    label={item.phone}
+                    value={item.token}
+                  />
+                );
+              })}
+            </Picker>
           </View>
         )}
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>
@@ -78,7 +88,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
           )}
         </View>
         <View style={styles.usersListContainer}>
-          {Object.keys(peerIds).length == 0 ? (
+          {Object.keys(peerIds).length === 0 ? (
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
               <Text style={{ color: '#fff' }}>
                 You are not calling to anyone
