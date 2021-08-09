@@ -75,11 +75,6 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
             <Image style={styles.Icon1} source={require('./assets/bug.jpeg')} />
           </View>
         ) : (
-          <View />
-        )}
-        {joinSucceed ? (
-          <View />
-        ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
             <Text style={styles.text}> Calling</Text>
             <Picker
