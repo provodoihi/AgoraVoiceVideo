@@ -18,6 +18,7 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { useState } from 'react';
 import { phonex } from './phone_token';
+import Foundation from 'react-native-vector-icons/Foundation';
 
 const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
@@ -53,10 +54,29 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
 
   return (
     <ImageBackground
-      blurRadius={3}
-      source={require('./assets/background.jpeg')}
-      style={styles.container}>
+      style={styles.container}
+      source={
+        joinSucceed
+          ? require('./assets/Empty-Background-01.png')
+          : require('./assets/bg.jpg')
+      }>
       <View style={styles.box1}>
+        {joinSucceed ? (
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Image
+              style={styles.Icon}
+              source={require('./assets/apples.jpeg')}
+            />
+            <Image style={styles.Icon} source={require('./assets/wolf.png')} />
+            <Image
+              style={styles.Icon}
+              source={require('./assets/fire1.jpeg')}
+            />
+            <Image style={styles.Icon1} source={require('./assets/bug.jpeg')} />
+          </View>
+        ) : (
+          <View />
+        )}
         {joinSucceed ? (
           <View />
         ) : (
@@ -82,31 +102,72 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
         )}
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>
           {joinSucceed ? (
-            <Icons name="phone-in-talk" size={90} color="#fff" />
+            <View>
+              <Image
+                style={styles.ava}
+                source={require('./assets/Rosee.jpeg')}
+              />
+            </View>
+          ) : (
+            <Icons name="phone" size={90} color="#fff" />
+          )}
+        </View>
+        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
+          {joinSucceed ? (
+            <View>
+              <Image
+                style={styles.ava}
+                source={require('./assets/Rosee.jpeg')}
+              />
+            </View>
           ) : (
             <Icons name="phone" size={90} color="#fff" />
           )}
         </View>
         <View style={styles.usersListContainer}>
-          {Object.keys(peerIds).length === 0 ? (
+          {Object.keys(peerIds).length == 0 ? (
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-              <Text style={{ color: '#fff' }}>
-                You are not calling to anyone
+              <Text style={{ color: '#fff', fontSize: 15 }}>
+                You are not calling anyone
               </Text>
             </View>
           ) : (
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 18, color: '#fff' }}>{`Calling ${
-                peerIds[Object.keys(peerIds).pop()]
-              } `}</Text>
-              <Stopwatch
-                start={isStopwatchStart}
-                //To start
-                reset={resetStopwatch}
-                //To reset
-                options={options}
-                //options for the styling
-              />
+              <Text
+                style={{
+                  fontSize: 20,
+                  color: '#000',
+                  marginTop: 0,
+                  fontWeight: 'bold',
+                }}>
+                {' '}
+                Rosee{' '}
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                <Foundation
+                  style={{
+                    marginTop: 18,
+                    marginRight: -50,
+                    marginLeft: 60,
+                  }}
+                  name="sound"
+                  size={40}
+                  color="#90ee90"
+                />
+                <Stopwatch
+                  style={{ marginLeft: 0 }}
+                  start={isStopwatchStart}
+                  //To start
+                  reset={resetStopwatch}
+                  //To reset
+                  options={options}
+                  //options for the styling
+                />
+              </View>
             </View>
           )}
         </View>

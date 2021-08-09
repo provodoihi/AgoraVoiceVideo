@@ -86,4 +86,23 @@ export default StyleSheet.create({
     height: 40,
     width: 40,
   },
+  ava: {
+    height: 150,
+    width: 150,
+    borderRadius: 75,
+    borderColor: '#6ac5fe',
+    borderWidth: 2,
+  },
+  Icon: {
+    height: 25,
+    width: 30,
+    marginRight: 5,
+    marginTop: 5,
+  },
+  Icon1: {
+    height: 24,
+    width: 20,
+    marginRight: 5,
+    marginTop: 10,
+  },
 });
