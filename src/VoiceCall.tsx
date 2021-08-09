@@ -17,7 +17,7 @@ import { AppNavigationProps } from './navigation/routes';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { useState } from 'react';
-import { phonex } from './phone_token';
+// import { phonex } from './phone_token';
 import Foundation from 'react-native-vector-icons/Foundation';
 
 const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
@@ -77,7 +77,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
             <Text style={styles.text}> Calling</Text>
-            <Picker
+            {/* <Picker
               selectedValue={token_data}
               onValueChange={(value) => setToken(value)}
               style={styles.pick}
@@ -92,21 +92,10 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
                   />
                 );
               })}
-            </Picker>
+            </Picker> */}
           </View>
         )}
-        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-          {joinSucceed ? (
-            <View>
-              <Image
-                style={styles.ava}
-                source={require('./assets/Rosee.jpeg')}
-              />
-            </View>
-          ) : (
-            <Icons name="phone" size={90} color="#fff" />
-          )}
-        </View>
+
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>
           {joinSucceed ? (
             <View>
