@@ -1,8 +1,10 @@
 import { StyleSheet } from 'react-native';
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   input: {
     textAlign: 'center',
@@ -16,39 +18,45 @@ export default StyleSheet.create({
     color: '#fff',
   },
   box1: {
-    marginTop: '3%',
     flex: 1.2,
     alignItems: 'center',
   },
   box2: {
-    flex: 1,
+    marginTop: '2%',
+    flex: 0.5,
+    alignItems: 'center',
   },
   callBox: {
-    marginBottom: '10%',
     flex: 1,
     alignItems: 'center',
     width: '100%',
+    marginBottom: '5%',
   },
   text: {
-    marginTop: '2%',
+    marginTop: '5%',
     color: '#fff',
     fontSize: 18,
     fontWeight: '500',
   },
   call: {
-    width: 90,
-    height: 90,
-    borderRadius: 45,
+    width: 144,
+    height: 144,
+    resizeMode: 'contain',
   },
   settingBox: {
-    alignItems: 'flex-end',
-    flex: 2,
-    justifyContent: 'space-between',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    width: '100%',
+    flexDirection: 'row',
+  },
+  settingBox2: {
+    marginTop: '1.5%',
+    alignItems: 'center',
+    justifyContent: 'space-around',
     width: '100%',
     flexDirection: 'row',
   },
   button: {
-    marginHorizontal: '10%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
@@ -73,17 +81,15 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  pick: {
-    color: '#9FA5AA',
-    textAlign: 'left',
-    justifyContent: 'center',
-    alignContent: 'flex-start',
-    width: '75%',
-    margin: '2%',
-    paddingLeft: '4%',
+  txt: {
+    fontSize: 16,
+    color: '#fff',
   },
-  speaker: {
-    height: 40,
-    width: 40,
+  txtBig: {
+    fontSize: 24,
+    color: '#fff',
+    fontWeight: 'bold',
   },
 });
+
+export default styles;

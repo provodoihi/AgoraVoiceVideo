@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,13 +7,17 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import styles from './styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Stopwatch } from 'react-native-stopwatch-timer';
+import axios from 'axios';
+import { Picker } from '@react-native-picker/picker';
+
+import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import { AppNavigationProps } from './navigation/routes';
+import { phonex } from './phone_token';
 
 const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
@@ -32,6 +36,38 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     resetStopwatch,
   } = useInitializeAgora();
 
+  const [token_data, setToken] = useState('');
+
+  const message = {
+    message: {
+      notification: {
+        title: 'Phone Call',
+        body: 'Someone is calling',
+      },
+    },
+    registrationToken: token_data,
+  };
+  // eHwaRYrhR5ebx6Ve98x_jr:APA91bHpSsjVz5ppglLLZ11hIS3dbHrClvQhZTnnpd7RuWkcX3tKbDSLIJLXJdq51qMgpx0VQdfnQ8HTZtfz7oFi17dDKp7dgKpH0pRipg5aBZYdXc8IdeqEQetvi0tnfEDKL18cZPcI
+
+  // const send_noti = () => {
+  //   axios.post('https://fcm.googleapis.com/fcm/send', data, {
+  //     headers: {
+  //       Authorization:
+  //         'key=AAAAQ1XvxKI:APA91bGQ91JS3ICpV3FyrwbF31RSFynHZjyAlTlf13579y83aIkod6eNxxIO7RzJgK33h63DII4G24Etnzm42MRRtCTXljX6gS9jPmSUFYcsRCe2Njwe3rlfSh71AQQ3A3fEBoOBZBHm',
+  //     },
+  //   });
+  // };
+  // // AAAAMuY7pis:APA91bEzFEh15PH73cdtnsrKdJD1w2VDheY_slLoZVF4vuyydX3PlA2TAYGYEW9ER16ygdP8kPbhwcolrtWYerY7c72qKqZHpi2_NQwF9D_66jUAb6T-u_Uhp-tWzJBP-zXKz_7G_QFB
+
+  // API
+  const handleNotification = () => {
+    const url =
+      'https://radiant-bastion-35631.herokuapp.com/firebase/notification';
+    axios.post(url, message).catch((e) => {
+      console.log('call API error', e);
+    });
+  };
+
   return (
     <ImageBackground
       blurRadius={3}
@@ -42,13 +78,23 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
           <View />
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
-            <Text style={styles.text}> Channel Name</Text>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => setChannelName(text)}
-              placeholder={'Channel Name'}
-              value={channelName}
-            />
+            <Text style={styles.text}> Calling</Text>
+            <Picker
+              selectedValue={token_data}
+              onValueChange={(value) => setToken(value)}
+              style={styles.pick}
+              dropdownIconColor="#9FA5AA">
+              <Picker.Item label="Choose User To Call" value="" />
+              {phonex.map((item) => {
+                return (
+                  <Picker.Item
+                    key={item.id}
+                    label={item.phone}
+                    value={item.token}
+                  />
+                );
+              })}
+            </Picker>
           </View>
         )}
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>
@@ -59,7 +105,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
           )}
         </View>
         <View style={styles.usersListContainer}>
-          {Object.keys(peerIds).length == 0 ? (
+          {Object.keys(peerIds).length === 0 ? (
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
               <Text style={{ color: '#fff' }}>
                 You are not calling to anyone
@@ -108,19 +154,26 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
         </View>
         <View style={{ height: 40 }} />
         <View style={styles.callBox}>
-          <TouchableOpacity
-            onPress={joinSucceed ? leaveChannel : joinChannel}
-            style={styles.call}>
-            <Image
-              source={
-                joinSucceed
-                  ? require('./assets/end-call.png')
-                  : require('./assets/accept-call.png')
-              }
-              resizeMode="contain"
-              style={styles.call}
-            />
-          </TouchableOpacity>
+          {joinSucceed === false ? (
+            <TouchableOpacity
+              onPress={() => handleNotification()}
+              onPressIn={joinChannel}
+              style={styles.call}>
+              <Image
+                source={require('./assets/accept-call.png')}
+                resizeMode="contain"
+                style={styles.call}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={leaveChannel} style={styles.call}>
+              <Image
+                source={require('./assets/end-call.png')}
+                resizeMode="contain"
+                style={styles.call}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </ImageBackground>
