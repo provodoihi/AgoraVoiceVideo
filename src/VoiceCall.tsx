@@ -18,6 +18,7 @@ import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 import { useState } from 'react';
 import { phonex } from './phone_token';
+import Foundation from 'react-native-vector-icons/Foundation';
 
 const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
@@ -53,12 +54,31 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
 
   return (
     <ImageBackground
-      blurRadius={3}
-      source={require('./assets/background.jpeg')}
-      style={styles.container}>
+      style={styles.container}
+      source={
+        joinSucceed
+          ? require('./assets/Empty-Background-01.png')
+          : require('./assets/bg.jpg')
+      }>
       <View style={styles.box1}>
         {joinSucceed ? (
-          <View />
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginTop: '2.5%',
+            }}>
+            <Image
+              style={styles.Icon}
+              source={require('./assets/apples.jpeg')}
+            />
+            <Image style={styles.Icon} source={require('./assets/wolf.png')} />
+            <Image
+              style={styles.Icon}
+              source={require('./assets/fire1.jpeg')}
+            />
+            <Image style={styles.Icon} source={require('./assets/bug.jpeg')} />
+          </View>
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
             <Text style={styles.text}> Calling</Text>
@@ -66,7 +86,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
               selectedValue={token_data}
               onValueChange={(value) => setToken(value)}
               style={styles.pick}
-              dropdownIconColor="#9FA5AA">
+              dropdownIconColor="#ffffff">
               <Picker.Item label="Choose User To Call" value="" />
               {phonex.map((item) => {
                 return (
@@ -80,33 +100,40 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
             </Picker>
           </View>
         )}
+
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>
           {joinSucceed ? (
-            <Icons name="phone-in-talk" size={90} color="#fff" />
+            <View>
+              <Image
+                style={styles.ava}
+                source={require('./assets/Rosee.jpeg')}
+              />
+            </View>
           ) : (
             <Icons name="phone" size={90} color="#fff" />
           )}
         </View>
         <View style={styles.usersListContainer}>
-          {Object.keys(peerIds).length === 0 ? (
+          {Object.keys(peerIds).length == 0 ? (
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-              <Text style={{ color: '#fff' }}>
-                You are not calling to anyone
+              <Text style={{ color: '#fff', fontSize: 15 }}>
+                You are not calling anyone
               </Text>
             </View>
           ) : (
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={{ fontSize: 18, color: '#fff' }}>{`Calling ${
-                peerIds[Object.keys(peerIds).pop()]
-              } `}</Text>
-              <Stopwatch
-                start={isStopwatchStart}
-                //To start
-                reset={resetStopwatch}
-                //To reset
-                options={options}
-                //options for the styling
-              />
+              <Text style={styles.textava}> Rosee </Text>
+              <View style={styles.counterbox}>
+                <Foundation name="sound" size={36} color="#90ee90" />
+                <Stopwatch
+                  start={isStopwatchStart}
+                  //To start
+                  reset={resetStopwatch}
+                  //To reset
+                  options={options}
+                  //options for the styling
+                />
+              </View>
             </View>
           )}
         </View>
@@ -135,7 +162,6 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
             />
           </TouchableOpacity>
         </View>
-        <View style={{ height: 40 }} />
         <View style={styles.callBox}>
           {joinSucceed === false ? (
             <TouchableOpacity
@@ -167,15 +193,15 @@ export default VoiceCall;
 const options = {
   container: {
     // backgroundColor: '#ffffff',
-    padding: 10,
-    borderRadius: 8,
-    width: 200,
+    padding: '4%',
+    borderRadius: 10,
+    width: '66%',
     alignItems: 'center',
     alignSelf: 'center',
   },
   text: {
     fontSize: 24,
     color: '#00ff00',
-    margin: 10,
+    margin: '1%',
   },
 };
