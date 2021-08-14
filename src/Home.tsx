@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
 import RNVoipCall from 'react-native-voip-call';
+import uuid from 'react-native-uuid';
 import { AppNavigationProps } from './navigation/routes';
 import styles from './stylehome';
 
@@ -46,7 +47,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
         ringtune: '', // add file inside Project_folder/android/app/res/raw
         duration: 15000, // default 30000
         vibration: true, // default is true
-        channel_name: 'test', //
+        channel_name: 'Calling', //
         notificationId: 123,
         notificationTitle: 'Incoming Call',
         notificationBody: 'Calling from Agora',
@@ -58,7 +59,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     };
     RNVoipCall.displayIncomingCall(callOptions);
     RNVoipCall.onCallAnswer(() => {
-      navigation.navigate('Voice');
+      navigation.navigate('InCall');
       RNVoipCall.endAllCalls();
     });
   }, [navigation]);
@@ -89,7 +90,9 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate('Video')}>
+          onPress={() => navigation.navigate('Video')}
+          // onPress={() => console.log(uuid.v4())}
+        >
           <Ionicons name="videocam" size={36} color="#fff" />
         </TouchableOpacity>
       </View>

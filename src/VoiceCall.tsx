@@ -19,6 +19,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { phonex } from './phone_token';
 import Foundation from 'react-native-vector-icons/Foundation';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
@@ -35,8 +36,6 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     resetStopwatch,
   } = useInitializeAgora();
 
-  // const phonex = require('./phone_token.json');
-
   const [token_data, setToken] = useState('');
 
   const data = {
@@ -50,6 +49,13 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     } catch (error) {
       ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT);
     }
+  };
+
+  const leave = () => {
+    leaveChannel();
+    setTimeout(() => {
+      navigation.navigate('Home');
+    }, 500);
   };
 
   return (
@@ -110,58 +116,74 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
               />
             </View>
           ) : (
-            <Icons name="phone" size={90} color="#fff" />
+            <Icons name="phone" size={96} color="#fff" />
           )}
         </View>
         <View style={styles.usersListContainer}>
-          {Object.keys(peerIds).length == 0 ? (
+          {Object.keys(peerIds).length === 0 ? (
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-              <Text style={{ color: '#fff', fontSize: 15 }}>
+              <Text style={{ color: '#fff', fontSize: 16 }}>
                 You are not calling anyone
               </Text>
             </View>
           ) : (
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={styles.textava}> Rosee </Text>
-              <View style={styles.counterbox}>
-                <Foundation name="sound" size={36} color="#90ee90" />
-                <Stopwatch
-                  start={isStopwatchStart}
-                  //To start
-                  reset={resetStopwatch}
-                  //To reset
-                  options={options}
-                  //options for the styling
-                />
-              </View>
+              <Text style={styles.textava}> Rosé </Text>
+              {Object.keys(peerIds).length === 2 ? (
+                <View style={styles.counterbox}>
+                  <Foundation name="sound" size={28} color="#90ee90" />
+                  <Stopwatch
+                    start={isStopwatchStart}
+                    //To start
+                    reset={resetStopwatch}
+                    //To reset
+                    options={options}
+                    //options for the styling
+                  />
+                </View>
+              ) : (
+                <View style={styles.counterbox}>
+                  <SimpleLineIcons name="call-out" size={42} color="#00FF00" />
+                </View>
+              )}
             </View>
           )}
         </View>
       </View>
       <View style={styles.box2}>
-        <View style={styles.settingBox}>
-          <TouchableOpacity onPress={toggleIsMute} style={styles.button}>
-            {isMute ? (
-              <Icon name="microphone-slash" size={35} color="#fff" />
-            ) : (
-              <Icon name="microphone" size={35} color="#fff" />
-            )}
-          </TouchableOpacity>
-          <View style={styles.floatRight}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <Ionicons name="home" size={35} color="#fff" />
+        {joinSucceed ? (
+          <View style={styles.settingBox}>
+            <TouchableOpacity onPress={toggleIsMute} style={styles.button}>
+              {isMute ? (
+                <Icon name="microphone-slash" size={28} color="#fff" />
+              ) : (
+                <Icon name="microphone" size={28} color="#fff" />
+              )}
+            </TouchableOpacity>
+            <View style={styles.floatRight}>
+              <TouchableOpacity style={styles.button} onPress={leave}>
+                <Ionicons name="home" size={28} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              onPress={toggleIsSpeakerEnable}
+              style={[styles.button]}>
+              <Icon
+                name="volume-up"
+                size={28}
+                color={isSpeakerEnable ? '#ffffff' : '#000000'}
+              />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={toggleIsSpeakerEnable}
-            style={[styles.button]}>
-            <Icon
-              name="volume-up"
-              size={32}
-              color={isSpeakerEnable ? '#000000' : '#fff'}
-            />
-          </TouchableOpacity>
-        </View>
+        ) : (
+          <View style={styles.box2}>
+            <TouchableOpacity
+              style={styles.homebtn}
+              onPress={() => navigation.navigate('Home')}>
+              <Ionicons name="home" size={32} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
         <View style={styles.callBox}>
           {joinSucceed === false ? (
             <TouchableOpacity
@@ -175,7 +197,9 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
               />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={leaveChannel} style={styles.call}>
+            <TouchableOpacity
+              onPress={leaveChannel}
+              style={[styles.call, styles.endcallbtn]}>
               <Image
                 source={require('./assets/end-call.png')}
                 resizeMode="contain"
@@ -200,7 +224,7 @@ const options = {
     alignSelf: 'center',
   },
   text: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#00ff00',
     margin: '1%',
   },

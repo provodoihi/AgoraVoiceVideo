@@ -6,9 +6,7 @@ import { requestAudioPermission } from './permissions';
 export const useRequestAudioHook = () => {
   useEffect(() => {
     if (Platform.OS === 'android') {
-      requestAudioPermission().then(() => {
-        console.log('requested!');
-      });
+      requestAudioPermission();
     }
   }, []);
 };
@@ -43,6 +41,9 @@ export const useInitializeAgora = () => {
 
         return peerIdsLocal;
       });
+
+      setIsStopwatchStart(true);
+      setResetStopwatch(false);
     });
 
     rtcEngine.current?.addListener('UserOffline', (uid, reason) => {
@@ -72,9 +73,9 @@ export const useInitializeAgora = () => {
   }, []);
 
   const joinChannel = useCallback(async () => {
-    await rtcEngine.current?.joinChannel(token, channelName, null, 1);
-    setIsStopwatchStart(true);
-    setResetStopwatch(false);
+    await rtcEngine.current?.joinChannel(token, channelName, null, 0);
+    // setIsStopwatchStart(true);
+    // setResetStopwatch(false);
   }, [channelName]);
 
   const leaveChannel = useCallback(async () => {
@@ -83,6 +84,7 @@ export const useInitializeAgora = () => {
     setResetStopwatch(true);
     setPeerIds([]);
     setJoinSucceed(false);
+    console.log('Leave channel');
   }, []);
 
   const toggleIsMute = useCallback(async () => {
@@ -112,6 +114,7 @@ export const useInitializeAgora = () => {
     isMute,
     isSpeakerEnable,
     joinSucceed,
+    setJoinSucceed,
     peerIds,
     isStopwatchStart,
     resetStopwatch,
