@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,7 +14,7 @@ import { AppNavigationProps } from './navigation/routes';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-const InCall = ({ navigation }: AppNavigationProps<'InCall'>) => {
+const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
   useRequestAudioHook();
   const {
     isMute,
@@ -23,11 +23,20 @@ const InCall = ({ navigation }: AppNavigationProps<'InCall'>) => {
     peerIds,
     joinChannel,
     leaveChannel,
+    setChannelName,
     toggleIsMute,
     toggleIsSpeakerEnable,
     isStopwatchStart,
     resetStopwatch,
   } = useInitializeAgora();
+
+  useEffect(() => {
+    setChannelName(route.params.channel);
+  });
+
+  const join = () => {
+    joinChannel();
+  };
 
   const leave = () => {
     leaveChannel();
@@ -100,6 +109,7 @@ const InCall = ({ navigation }: AppNavigationProps<'InCall'>) => {
         </View>
       </View>
       <View style={styles.box2}>
+        {/* when the user join channel success */}
         {joinSucceed ? (
           <View style={styles.settingBox}>
             <TouchableOpacity onPress={toggleIsMute} style={styles.button}>
@@ -131,7 +141,7 @@ const InCall = ({ navigation }: AppNavigationProps<'InCall'>) => {
           <View style={styles.box3}>
             <View style={styles.settingBox}>
               <View style={styles.callBox}>
-                <TouchableOpacity onPress={joinChannel} style={styles.call}>
+                <TouchableOpacity onPress={join} style={styles.call}>
                   <Image
                     source={require('./assets/accept-call.png')}
                     resizeMode="contain"

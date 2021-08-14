@@ -29,6 +29,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     joinSucceed,
     peerIds,
     joinChannel,
+    channelName,
     leaveChannel,
     toggleIsMute,
     toggleIsSpeakerEnable,
@@ -39,7 +40,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   const [token_data, setToken] = useState('');
 
   const data = {
-    message: 'hello',
+    message: channelName,
     token: token_data,
   };
 

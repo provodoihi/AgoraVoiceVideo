@@ -5,7 +5,7 @@ export type AppRoutes = {
   Video: undefined;
   Voice: undefined;
   Home: undefined;
-  InCall: undefined;
+  InCall: { channel: string | number[] };
 };
 
 export interface AppNavigationProps<RouteName extends keyof AppRoutes> {
