@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Platform } from 'react-native';
 import RtcEngine from 'react-native-agora';
+import uuid from 'react-native-uuid';
 import { requestAudioPermission } from './permissions';
 
 export const useRequestAudioHook = () => {
@@ -15,7 +16,7 @@ export const useInitializeAgora = () => {
   const appId = '9747a594ebdd486c948da607b25aa21c';
   const token = '';
 
-  const [channelName, setChannelName] = useState('Test');
+  const [channelName, setChannelName] = useState<string | number[]>(uuid.v4());
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState([]);
   const [isMute, setIsMute] = useState(false);
@@ -31,6 +32,7 @@ export const useInitializeAgora = () => {
     await rtcEngine.current?.muteLocalAudioStream(false);
     await rtcEngine.current?.setEnableSpeakerphone(true);
 
+    // This callback occurs when the remote user successfully joins the channel.
     rtcEngine.current?.addListener('UserJoined', (uid, elapsed) => {
       console.log('UserJoined', uid, elapsed);
 
@@ -46,6 +48,7 @@ export const useInitializeAgora = () => {
       setResetStopwatch(false);
     });
 
+    // This callback occurs when the remote user leaves the channel or drops offline.
     rtcEngine.current?.addListener('UserOffline', (uid, reason) => {
       console.log('UserOffline', uid, reason);
 
@@ -54,6 +57,7 @@ export const useInitializeAgora = () => {
       });
     });
 
+    // This callback occurs when the local user successfully joins the channel.
     rtcEngine.current?.addListener(
       'JoinChannelSuccess',
       (channel, uid, elapsed) => {
@@ -74,8 +78,6 @@ export const useInitializeAgora = () => {
 
   const joinChannel = useCallback(async () => {
     await rtcEngine.current?.joinChannel(token, channelName, null, 0);
-    // setIsStopwatchStart(true);
-    // setResetStopwatch(false);
   }, [channelName]);
 
   const leaveChannel = useCallback(async () => {
