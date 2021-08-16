@@ -59,7 +59,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginTop: '2.5%',
+              marginTop: '3%',
             }}>
             <Image
               style={styles.Icon}

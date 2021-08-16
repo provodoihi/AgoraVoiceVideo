@@ -73,7 +73,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginTop: '2.5%',
+              marginTop: '3%',
             }}>
             <Image
               style={styles.Icon}
