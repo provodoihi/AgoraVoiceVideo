@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  Vibration,
 } from 'react-native';
 import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import styles from './styles';
@@ -30,11 +31,24 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
     resetStopwatch,
   } = useInitializeAgora();
 
+  const DURATION = 3000;
   useEffect(() => {
     setChannelName(route.params.channel);
   });
 
+  useEffect(() => {
+    Vibration.vibrate([
+      0,
+      DURATION,
+      DURATION / 3,
+      DURATION,
+      DURATION / 3,
+      DURATION,
+    ]);
+  }, []);
+
   const join = () => {
+    Vibration.cancel();
     joinChannel();
   };
 
@@ -43,6 +57,11 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
     setTimeout(() => {
       navigation.navigate('Home');
     }, 400);
+  };
+
+  const decline = () => {
+    Vibration.cancel();
+    navigation.navigate('Home');
   };
 
   return (
@@ -74,7 +93,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
           </View>
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
-            <Text style={styles.text}>Incomming Call</Text>
+            <Text style={styles.text}>Incoming Call</Text>
           </View>
         )}
 
@@ -150,9 +169,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.callBox}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Home')}
-                  style={styles.call}>
+                <TouchableOpacity onPress={decline} style={styles.call}>
                   <Image
                     source={require('./assets/end-call.png')}
                     resizeMode="contain"
