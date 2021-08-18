@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { Platform } from 'react-native';
 import RtcEngine from 'react-native-agora';
+import uuid from 'react-native-uuid';
 import { requestAudioPermission } from './permissions';
 
 export const useRequestAudioHook = () => {
   useEffect(() => {
     if (Platform.OS === 'android') {
-      requestAudioPermission().then(() => {
-        console.log('requested!');
-      });
+      requestAudioPermission();
     }
   }, []);
 };
@@ -18,7 +17,8 @@ export const useInitializeAgora = () => {
   const token = '';
   // 0067001edec4c95403795105b02af75435bIABU5oMGQzvs0YGecigO2aaVKrp3HixUvPM+FtIi1n21iAx+f9gAAAAAEACXmsVzg5L3YAEAAQCDkvdg
 
-  const [channelName, setChannelName] = useState('Test');
+  // const [channelName, setChannelName] = useState('Test');
+  const [channelName, setChannelName] = useState<string | number[]>(uuid.v4());
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState([]);
   const [isMute, setIsMute] = useState(false);
@@ -34,6 +34,7 @@ export const useInitializeAgora = () => {
     await rtcEngine.current?.muteLocalAudioStream(false);
     await rtcEngine.current?.setEnableSpeakerphone(true);
 
+    // This callback occurs when the remote user successfully joins the channel.
     rtcEngine.current?.addListener('UserJoined', (uid, elapsed) => {
       console.log('UserJoined', uid, elapsed);
       setPeerIds((peerIdsLocal) => {
@@ -43,8 +44,12 @@ export const useInitializeAgora = () => {
 
         return peerIdsLocal;
       });
+
+      setIsStopwatchStart(true);
+      setResetStopwatch(false);
     });
 
+    // This callback occurs when the remote user leaves the channel or drops offline.
     rtcEngine.current?.addListener('UserOffline', (uid, reason) => {
       console.log('UserOffline', uid, reason);
 
@@ -53,6 +58,7 @@ export const useInitializeAgora = () => {
       });
     });
 
+    // This callback occurs when the local user successfully joins the channel.
     rtcEngine.current?.addListener(
       'JoinChannelSuccess',
       (channel, uid, elapsed) => {
@@ -72,9 +78,7 @@ export const useInitializeAgora = () => {
   }, []);
 
   const joinChannel = useCallback(async () => {
-    await rtcEngine.current?.joinChannel(token, channelName, null, 1);
-    setIsStopwatchStart(true);
-    setResetStopwatch(false);
+    await rtcEngine.current?.joinChannel(token, channelName, null, 0);
   }, [channelName]);
 
   const leaveChannel = useCallback(async () => {
@@ -83,6 +87,7 @@ export const useInitializeAgora = () => {
     setResetStopwatch(true);
     setPeerIds([]);
     setJoinSucceed(false);
+    console.log('Leave channel');
   }, []);
 
   const toggleIsMute = useCallback(async () => {
@@ -112,6 +117,7 @@ export const useInitializeAgora = () => {
     isMute,
     isSpeakerEnable,
     joinSucceed,
+    setJoinSucceed,
     peerIds,
     isStopwatchStart,
     resetStopwatch,

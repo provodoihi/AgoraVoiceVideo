@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import VoiceCall from '../VoiceCall';
 import VideoCall from '../VideoCall';
+import InCall from '../IncomingCall';
 import { AppRoutes } from './routes';
 import Home from '../Home';
 
@@ -26,6 +27,11 @@ const AppContainer = () => {
           options={{ headerShown: false }}
           name="Video"
           component={VideoCall}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="InCall"
+          component={InCall}
         />
       </Stack.Navigator>
     </NavigationContainer>

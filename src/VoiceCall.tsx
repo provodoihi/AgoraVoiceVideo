@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icons from 'react-native-vector-icons/MaterialIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Foundation from 'react-native-vector-icons/Foundation';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
@@ -28,6 +29,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     joinSucceed,
     peerIds,
     joinChannel,
+    channelName,
     leaveChannel,
     toggleIsMute,
     toggleIsSpeakerEnable,
@@ -36,28 +38,17 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   } = useInitializeAgora();
 
   const [token_data, setToken] = useState('');
-
+  console.log(channelName);
   const message = {
     message: {
       notification: {
         title: 'Phone Call',
-        body: 'Someone is calling',
+        body: channelName,
       },
     },
     registrationToken: token_data,
   };
-  // eHwaRYrhR5ebx6Ve98x_jr:APA91bHpSsjVz5ppglLLZ11hIS3dbHrClvQhZTnnpd7RuWkcX3tKbDSLIJLXJdq51qMgpx0VQdfnQ8HTZtfz7oFi17dDKp7dgKpH0pRipg5aBZYdXc8IdeqEQetvi0tnfEDKL18cZPcI
-
-  // const send_noti = () => {
-  //   axios.post('https://fcm.googleapis.com/fcm/send', data, {
-  //     headers: {
-  //       Authorization:
-  //         'key=AAAAQ1XvxKI:APA91bGQ91JS3ICpV3FyrwbF31RSFynHZjyAlTlf13579y83aIkod6eNxxIO7RzJgK33h63DII4G24Etnzm42MRRtCTXljX6gS9jPmSUFYcsRCe2Njwe3rlfSh71AQQ3A3fEBoOBZBHm',
-  //     },
-  //   });
-  // };
-  // // AAAAMuY7pis:APA91bEzFEh15PH73cdtnsrKdJD1w2VDheY_slLoZVF4vuyydX3PlA2TAYGYEW9ER16ygdP8kPbhwcolrtWYerY7c72qKqZHpi2_NQwF9D_66jUAb6T-u_Uhp-tWzJBP-zXKz_7G_QFB
-
+ 
   // API
   const handleNotification = () => {
     const url =
@@ -65,6 +56,13 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     axios.post(url, message).catch((e) => {
       console.log('call API error', e);
     });
+  };
+
+  const leave = () => {
+    leaveChannel();
+    setTimeout(() => {
+      navigation.navigate('Home');
+    }, 500);
   };
 
   return (
@@ -81,7 +79,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginTop: '2.5%',
+              marginTop: '3%',
             }}>
             <Image
               style={styles.Icon}
@@ -125,58 +123,74 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
               />
             </View>
           ) : (
-            <Icons name="phone" size={90} color="#fff" />
+            <Icons name="phone" size={96} color="#fff" />
           )}
         </View>
         <View style={styles.usersListContainer}>
-          {Object.keys(peerIds).length == 0 ? (
+          {Object.keys(peerIds).length === 0 ? (
             <View style={{ flex: 1, justifyContent: 'flex-start' }}>
-              <Text style={{ color: '#fff', fontSize: 15 }}>
+              <Text style={{ color: '#fff', fontSize: 16 }}>
                 You are not calling anyone
               </Text>
             </View>
           ) : (
             <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-              <Text style={styles.textava}> Rosee </Text>
-              <View style={styles.counterbox}>
-                <Foundation name="sound" size={36} color="#90ee90" />
-                <Stopwatch
-                  start={isStopwatchStart}
-                  //To start
-                  reset={resetStopwatch}
-                  //To reset
-                  options={options}
-                  //options for the styling
-                />
-              </View>
+              <Text style={styles.textava}> Rosé </Text>
+              {Object.keys(peerIds).length === 2 ? (
+                <View style={styles.counterbox}>
+                  <Foundation name="sound" size={28} color="#90ee90" />
+                  <Stopwatch
+                    start={isStopwatchStart}
+                    //To start
+                    reset={resetStopwatch}
+                    //To reset
+                    options={options}
+                    //options for the styling
+                  />
+                </View>
+              ) : (
+                <View style={styles.counterbox}>
+                  <SimpleLineIcons name="call-out" size={42} color="#00FF00" />
+                </View>
+              )}
             </View>
           )}
         </View>
       </View>
       <View style={styles.box2}>
-        <View style={styles.settingBox}>
-          <TouchableOpacity onPress={toggleIsMute} style={styles.button}>
-            {isMute ? (
-              <Icon name="microphone-slash" size={35} color="#fff" />
-            ) : (
-              <Icon name="microphone" size={35} color="#fff" />
-            )}
-          </TouchableOpacity>
-          <View style={styles.floatRight}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-              <Ionicons name="home" size={35} color="#fff" />
+        {joinSucceed ? (
+          <View style={styles.settingBox}>
+            <TouchableOpacity onPress={toggleIsMute} style={styles.button}>
+              {isMute ? (
+                <Icon name="microphone-slash" size={28} color="#fff" />
+              ) : (
+                <Icon name="microphone" size={28} color="#fff" />
+              )}
+            </TouchableOpacity>
+            <View style={styles.floatRight}>
+              <TouchableOpacity style={styles.button} onPress={leave}>
+                <Ionicons name="home" size={28} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity
+              onPress={toggleIsSpeakerEnable}
+              style={[styles.button]}>
+              <Icon
+                name="volume-up"
+                size={28}
+                color={isSpeakerEnable ? '#ffffff' : '#000000'}
+              />
             </TouchableOpacity>
           </View>
-          <TouchableOpacity
-            onPress={toggleIsSpeakerEnable}
-            style={[styles.button]}>
-            <Icon
-              name="volume-up"
-              size={32}
-              color={isSpeakerEnable ? '#000000' : '#fff'}
-            />
-          </TouchableOpacity>
-        </View>
+        ) : (
+          <View style={styles.box2}>
+            <TouchableOpacity
+              style={styles.homebtn}
+              onPress={() => navigation.navigate('Home')}>
+              <Ionicons name="home" size={32} color="#fff" />
+            </TouchableOpacity>
+          </View>
+        )}
         <View style={styles.callBox}>
           {joinSucceed === false ? (
             <TouchableOpacity
@@ -190,7 +204,9 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
               />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity onPress={leaveChannel} style={styles.call}>
+            <TouchableOpacity
+              onPress={leaveChannel}
+              style={[styles.call, styles.endcallbtn]}>
               <Image
                 source={require('./assets/end-call.png')}
                 resizeMode="contain"
@@ -215,7 +231,7 @@ const options = {
     alignSelf: 'center',
   },
   text: {
-    fontSize: 24,
+    fontSize: 20,
     color: '#00ff00',
     margin: '1%',
   },

@@ -5,7 +5,6 @@ import {
   ImageBackground,
   Text,
   Image,
-  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -34,48 +33,88 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     }
   };
 
-  const displayIncommingCall = useCallback(() => {
-    let callOptions = {
-      callerId: '9599ba92-f173-4048-a601-47fde6393a28', // Important uuid must in this format
-      ios: {
-        phoneNumber: '0999999999', // Caller Mobile Number
-        name: 'Test', // caller Name
-        hasVideo: true,
-      },
-      android: {
-        ringtuneSound: false, // default true
-        ringtune: '', // add file inside Project_folder/android/app/res/raw
-        duration: 15000, // default 30000
-        vibration: true, // default is true
-        channel_name: 'test', //
-        notificationId: 123,
-        notificationTitle: 'Incoming Call',
-        notificationBody: 'Calling from Sơn',
-        answerActionTitle: 'Answer',
-        declineActionTitle: 'Decline',
-        missedCallTitle: 'Call Missed',
-        missedCallBody: 'You missed a call',
-      },
-    };
-    RNVoipCall.displayIncomingCall(callOptions);
-    RNVoipCall.onCallAnswer(() => {
-      navigation.navigate('Voice');
-      RNVoipCall.endAllCalls();
-    });
-  }, [navigation]);
-
   useEffect(() => {
     requestUserPermission();
-    const unsubscribe = messaging().onMessage(() => {
-      displayIncommingCall();
+    messaging().onNotificationOpenedApp((remoteMessage) => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+      navigation.navigate('InCall', {
+        channel: remoteMessage.notification.body,
+      });
     });
-    return unsubscribe;
-  }, [displayIncommingCall, requestUserPermission]);
+
+    messaging()
+      .getInitialNotification()
+      .then((remoteMessage) => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          navigation.navigate('InCall', {
+            channel: remoteMessage.notification.body,
+          });
+        }
+      });
+
+    messaging().onMessage((remoteMessage) => {
+      console.log(
+        'Message handle in the foreground',
+        remoteMessage.notification,
+      );
+      navigation.navigate('InCall', {
+        channel: remoteMessage.notification.body,
+      });
+    });
+  }, [navigation, requestUserPermission]);
+
+  // useEffect(() => {
+  //   requestUserPermission();
+  //   const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+  //     // console.log(channel);
+  //     // // setChannel(remoteMessage.data.message);
+  //     // // displayIncommingCall();
+  //     console.log(remoteMessage.notification.body, 'alkjjsf');
+
+  //     let callOptions = {
+  //       callerId: remoteMessage.notification.body, // Important uuid must in this format
+  //       ios: {
+  //         phoneNumber: '0999999999', // Caller Mobile Number
+  //         name: 'Test', // caller Name
+  //         hasVideo: true,
+  //       },
+  //       android: {
+  //         ringtuneSound: false, // default true
+  //         ringtune: '', // add file inside Project_folder/android/app/res/raw
+  //         duration: 15000, // default 30000
+  //         vibration: true, // default is true
+  //         channel_name: 'Calling', //
+  //         notificationId: 123,
+  //         notificationTitle: 'Incoming Call',
+  //         notificationBody: 'Calling from Agora',
+  //         answerActionTitle: 'Answer',
+  //         declineActionTitle: 'Decline',
+  //         missedCallTitle: 'Call Missed',
+  //         missedCallBody: 'You missed a call',
+  //       },
+  //     };
+  //     RNVoipCall.displayIncomingCall(callOptions);
+  //     RNVoipCall.onCallAnswer(() => {
+  //       navigation.navigate('InCall', {
+  //         channel: remoteMessage.notification.body,
+  //       });
+  //       RNVoipCall.endAllCalls();
+  //     });
+  //   });
+  //   return unsubscribe;
+  // }, [navigation, requestUserPermission]);
 
   return (
     <ImageBackground
       blurRadius={3}
-      source={require('./assets/background.jpeg')}
+      source={require('./assets/background2.jpg')}
       style={styles.container}>
       <View style={styles.box2}>
         <Image style={styles.call} source={require('./assets/ggvoice.png')} />
