@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -14,6 +14,7 @@ import { AppNavigationProps } from './navigation/routes';
 import styles from './stylehome';
 
 const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
+  const [token, setToken] = useState('');
   const requestUserPermission = useCallback(async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -28,6 +29,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
       console.log('Your Firebase Token is:', fcmToken);
+      setToken(fcmToken);
     } else {
       console.log('Failed', 'No token received');
     }
@@ -35,6 +37,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
 
   useEffect(() => {
     requestUserPermission();
+    console.log(token);
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
       // console.log(channel);
       // // setChannel(remoteMessage.data.message);
@@ -67,10 +70,15 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
       //   navigation.navigate('InCall', { channel: remoteMessage.data.message });
       //   RNVoipCall.endAllCalls();
       // });
-      navigation.navigate('InCall', { channel: remoteMessage.data.message });
+      if (remoteMessage.notification.title === 'Call') {
+        navigation.navigate('InCall', {
+          channel: remoteMessage.notification.body,
+          token: remoteMessage.data.data,
+        });
+      }
     });
     return unsubscribe;
-  }, [navigation, requestUserPermission]);
+  }, [navigation, requestUserPermission, token]);
 
   return (
     <ImageBackground
@@ -83,7 +91,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
       </View>
       <View style={styles.settingBox}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Voice')}
+          onPress={() => navigation.navigate('Voice', { token: token })}
           style={styles.button}>
           <Icon name="microphone" size={36} color="#fff" />
         </TouchableOpacity>
