@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -19,9 +19,10 @@ import axios from 'axios';
 import { useState } from 'react';
 import { phonex } from './phone_token';
 import Foundation from 'react-native-vector-icons/Foundation';
+import messaging from '@react-native-firebase/messaging';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
-const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
+const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
   const {
     isMute,
@@ -40,24 +41,35 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   const [token_data, setToken] = useState('');
 
   const data = {
-    message: channelName,
+    title: 'Call',
+    body: channelName,
+    data: route.params.token,
     token: token_data,
   };
 
   const send_noti = async () => {
     try {
-      await axios.post('http://192.168.1.7:8080/api', data);
+      await axios.post('http://192.168.1.7:8080/api/notify', data);
     } catch (error) {
       ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT);
     }
   };
 
-  const leave = () => {
+  const leave = useCallback(() => {
     leaveChannel();
     setTimeout(() => {
       navigation.navigate('Home');
-    }, 500);
-  };
+    }, 400);
+  }, [leaveChannel, navigation]);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      if (remoteMessage.notification.title === 'Reject') {
+        leave();
+      }
+    });
+    return unsubscribe;
+  }, [leave, navigation]);
 
   return (
     <ImageBackground
@@ -199,7 +211,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              onPress={leaveChannel}
+              onPress={leave}
               style={[styles.call, styles.endcallbtn]}>
               <Image
                 source={require('./assets/end-call.png')}

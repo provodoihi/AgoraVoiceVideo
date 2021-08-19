@@ -5,6 +5,8 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  Vibration,
+  ToastAndroid,
 } from 'react-native';
 import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import styles from './styles';
@@ -13,6 +15,7 @@ import { Stopwatch } from 'react-native-stopwatch-timer';
 import { AppNavigationProps } from './navigation/routes';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
 const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
   useRequestAudioHook();
@@ -30,12 +33,42 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
     resetStopwatch,
   } = useInitializeAgora();
 
+  const DURATION = 3000;
   useEffect(() => {
     setChannelName(route.params.channel);
   });
 
+  useEffect(() => {
+    Vibration.vibrate([
+      0,
+      DURATION,
+      DURATION / 3,
+      DURATION,
+      DURATION / 3,
+      DURATION,
+      DURATION / 3,
+      DURATION,
+    ]);
+  }, []);
+
   const join = () => {
+    Vibration.cancel();
     joinChannel();
+  };
+
+  const data = {
+    title: 'Reject',
+    body: 'Reject',
+    data: 'Reject',
+    token: route.params.token,
+  };
+
+  const send_noti = async () => {
+    try {
+      await axios.post('http://192.168.1.7:8080/api/notify', data);
+    } catch (error) {
+      ToastAndroid.show('Something Went Wrong', ToastAndroid.SHORT);
+    }
   };
 
   const leave = () => {
@@ -43,6 +76,12 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
     setTimeout(() => {
       navigation.navigate('Home');
     }, 400);
+  };
+
+  const decline = async () => {
+    Vibration.cancel();
+    await send_noti();
+    navigation.navigate('Home');
   };
 
   return (
@@ -74,7 +113,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
           </View>
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
-            <Text style={styles.text}>Incomming Call</Text>
+            <Text style={styles.text}>Incoming Call</Text>
           </View>
         )}
 
@@ -150,9 +189,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.callBox}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Home')}
-                  style={styles.call}>
+                <TouchableOpacity onPress={decline} style={styles.call}>
                   <Image
                     source={require('./assets/end-call.png')}
                     resizeMode="contain"
