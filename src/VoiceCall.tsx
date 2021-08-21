@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,12 +16,13 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 import { Stopwatch } from 'react-native-stopwatch-timer';
 import axios from 'axios';
 import { Picker } from '@react-native-picker/picker';
+import messaging from '@react-native-firebase/messaging';
 
 import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import { AppNavigationProps } from './navigation/routes';
 import { phonex } from './phone_token';
 
-const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
+const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
   useRequestAudioHook();
   const {
     isMute,
@@ -38,13 +39,16 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   } = useInitializeAgora();
 
   const [token_data, setToken] = useState('');
-  console.log(channelName);
+
   const message = {
     message: {
       notification: {
         title: 'Phone Call',
         body: channelName,
       },
+      data: {
+        data: route.params.token
+      }
     },
     registrationToken: token_data,
   };
@@ -58,12 +62,21 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     });
   };
 
-  const leave = () => {
+  const leave = useCallback(() => {
     leaveChannel();
     setTimeout(() => {
       navigation.navigate('Home');
-    }, 500);
-  };
+    }, 400);
+  }, [leaveChannel, navigation]);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async (remoteMessage) => {
+      if (remoteMessage.notification.title === 'Reject') {
+        leave();
+      }
+    });
+    return unsubscribe;
+  }, [leave, navigation]);
 
   return (
     <ImageBackground
@@ -205,7 +218,7 @@ const VoiceCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              onPress={leaveChannel}
+              onPress={leave}
               style={[styles.call, styles.endcallbtn]}>
               <Image
                 source={require('./assets/end-call.png')}

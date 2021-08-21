@@ -3,9 +3,9 @@ import { RouteProp } from '@react-navigation/native';
 
 export type AppRoutes = {
   Video: undefined;
-  Voice: undefined;
+  Voice: {token: string};
   Home: undefined;
-  InCall: { channel: string | number[] };
+  InCall: { channel: string | number[]; token:string };
 };
 
 export interface AppNavigationProps<RouteName extends keyof AppRoutes> {

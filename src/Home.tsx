@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -9,11 +9,11 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
-import RNVoipCall from 'react-native-voip-call';
 import { AppNavigationProps } from './navigation/routes';
 import styles from './stylehome';
 
 const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
+  const [token, setToken] = useState('');
   const requestUserPermission = useCallback(async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -28,6 +28,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     const fcmToken = await messaging().getToken();
     if (fcmToken) {
       console.log('Your Firebase Token is:', fcmToken);
+      setToken(fcmToken);
     } else {
       console.log('Failed', 'No token received');
     }
@@ -35,14 +36,18 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
 
   useEffect(() => {
     requestUserPermission();
+    console.log(token);
     messaging().onNotificationOpenedApp((remoteMessage) => {
       console.log(
         'Notification caused app to open from background state:',
         remoteMessage.notification,
       );
-      navigation.navigate('InCall', {
-        channel: remoteMessage.notification.body,
-      });
+      if (remoteMessage.notification.title === 'Phone Call') {
+        navigation.navigate('InCall', {
+          channel: remoteMessage.notification.body,
+          token: remoteMessage.data.data,
+        });
+      }
     });
 
     messaging()
@@ -53,63 +58,31 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
             'Notification caused app to open from quit state:',
             remoteMessage.notification,
           );
-          navigation.navigate('InCall', {
-            channel: remoteMessage.notification.body,
-          });
+          if (remoteMessage.notification.title === 'Phone Call') {
+            navigation.navigate('InCall', {
+              channel: remoteMessage.notification.body,
+              token: remoteMessage.data.data,
+            });
+          }
         }
       });
 
-    messaging().onMessage((remoteMessage) => {
-      console.log(
-        'Message handle in the foreground',
-        remoteMessage.notification,
-      );
-      navigation.navigate('InCall', {
-        channel: remoteMessage.notification.body,
-      });
+    messaging().onMessage(async (remoteMessage) => {
+      if (remoteMessage.notification.title === 'Phone Call') {
+        navigation.navigate('InCall', {
+          channel: remoteMessage.notification.body,
+          token: remoteMessage.data.data,
+        });
+      }
+      // console.log(
+      //   'Message handle in the foreground',
+      //   remoteMessage.notification,
+      // );
+      // navigation.navigate('InCall', {
+      //   channel: remoteMessage.notification.body,
+      // });
     });
-  }, [navigation, requestUserPermission]);
-
-  // useEffect(() => {
-  //   requestUserPermission();
-  //   const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-  //     // console.log(channel);
-  //     // // setChannel(remoteMessage.data.message);
-  //     // // displayIncommingCall();
-  //     console.log(remoteMessage.notification.body, 'alkjjsf');
-
-  //     let callOptions = {
-  //       callerId: remoteMessage.notification.body, // Important uuid must in this format
-  //       ios: {
-  //         phoneNumber: '0999999999', // Caller Mobile Number
-  //         name: 'Test', // caller Name
-  //         hasVideo: true,
-  //       },
-  //       android: {
-  //         ringtuneSound: false, // default true
-  //         ringtune: '', // add file inside Project_folder/android/app/res/raw
-  //         duration: 15000, // default 30000
-  //         vibration: true, // default is true
-  //         channel_name: 'Calling', //
-  //         notificationId: 123,
-  //         notificationTitle: 'Incoming Call',
-  //         notificationBody: 'Calling from Agora',
-  //         answerActionTitle: 'Answer',
-  //         declineActionTitle: 'Decline',
-  //         missedCallTitle: 'Call Missed',
-  //         missedCallBody: 'You missed a call',
-  //       },
-  //     };
-  //     RNVoipCall.displayIncomingCall(callOptions);
-  //     RNVoipCall.onCallAnswer(() => {
-  //       navigation.navigate('InCall', {
-  //         channel: remoteMessage.notification.body,
-  //       });
-  //       RNVoipCall.endAllCalls();
-  //     });
-  //   });
-  //   return unsubscribe;
-  // }, [navigation, requestUserPermission]);
+  }, [navigation, requestUserPermission, token]);
 
   return (
     <ImageBackground
@@ -122,7 +95,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
       </View>
       <View style={styles.settingBox}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('Voice')}
+          onPress={() => navigation.navigate('Voice', { token: token })}
           style={styles.button}>
           <Icon name="microphone" size={36} color="#fff" />
         </TouchableOpacity>

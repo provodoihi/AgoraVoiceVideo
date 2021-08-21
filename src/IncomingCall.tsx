@@ -5,6 +5,7 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
+  Vibration,
 } from 'react-native';
 import { useInitializeAgora, useRequestAudioHook } from './hooks';
 import styles from './styles';
@@ -13,6 +14,7 @@ import { Stopwatch } from 'react-native-stopwatch-timer';
 import { AppNavigationProps } from './navigation/routes';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
 const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
   useRequestAudioHook();
@@ -30,12 +32,53 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
     resetStopwatch,
   } = useInitializeAgora();
 
+  const ONE_SECOND_IN_MS = 1000;
+
+  const PATTERN = [
+    1 * ONE_SECOND_IN_MS,
+    2 * ONE_SECOND_IN_MS,
+    3 * ONE_SECOND_IN_MS,
+  ];
+
+  const message = {
+    message: {
+      notification: {
+        title: 'Reject',
+        body: 'Reject',
+      },
+      data: {
+        data: 'Reject'
+      }
+    },
+    registrationToken: route.params.token,
+  };
+
+  // API
+  const handleNotification = () => {
+    const url =
+      'https://radiant-bastion-35631.herokuapp.com/firebase/notification';
+    axios.post(url, message).catch((e) => {
+      console.log('IncomingCall API error', e);
+    });
+  };
+
+  useEffect(() => {
+    Vibration.vibrate(PATTERN, true);
+  }, []);
+
   useEffect(() => {
     setChannelName(route.params.channel);
   });
 
   const join = () => {
     joinChannel();
+    Vibration.cancel();
+  };
+
+  const decline = async () => {
+    Vibration.cancel();
+    await handleNotification();
+    navigation.navigate('Home');
   };
 
   const leave = () => {
@@ -44,6 +87,13 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
       navigation.navigate('Home');
     }, 400);
   };
+
+  // const data = {
+  //   title: 'Reject',
+  //   body: 'Reject',
+  //   data: 'Reject',
+  //   token: route.params.token,
+  // };
 
   return (
     <ImageBackground
@@ -74,7 +124,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
           </View>
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
-            <Text style={styles.text}>Incomming Call</Text>
+            <Text style={styles.text}>Incoming Call</Text>
           </View>
         )}
 
@@ -150,9 +200,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
                 </TouchableOpacity>
               </View>
               <View style={styles.callBox}>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('Home')}
-                  style={styles.call}>
+                <TouchableOpacity onPress={decline} style={styles.call}>
                   <Image
                     source={require('./assets/end-call.png')}
                     resizeMode="contain"

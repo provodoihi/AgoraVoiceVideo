@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { Platform } from 'react-native';
 import RtcEngine from 'react-native-agora';
 import uuid from 'react-native-uuid';
@@ -18,6 +19,7 @@ export const useInitializeAgora = () => {
   // 0067001edec4c95403795105b02af75435bIABU5oMGQzvs0YGecigO2aaVKrp3HixUvPM+FtIi1n21iAx+f9gAAAAAEACXmsVzg5L3YAEAAQCDkvdg
 
   // const [channelName, setChannelName] = useState('Test');
+  const navigation = useNavigation();
   const [channelName, setChannelName] = useState<string | number[]>(uuid.v4());
   const [joinSucceed, setJoinSucceed] = useState(false);
   const [peerIds, setPeerIds] = useState([]);
@@ -53,9 +55,14 @@ export const useInitializeAgora = () => {
     rtcEngine.current?.addListener('UserOffline', (uid, reason) => {
       console.log('UserOffline', uid, reason);
 
-      setPeerIds((peerIdsLocal) => {
-        return peerIdsLocal.filter((id) => id !== uid);
-      });
+      // setPeerIds((peerIdsLocal) => {
+      //   return peerIdsLocal.filter((id) => id !== uid);
+      // });
+      setPeerIds([]);
+      setJoinSucceed(false);
+      setTimeout(() => {
+        navigation.navigate('Home');
+      }, 400);
     });
 
     // This callback occurs when the local user successfully joins the channel.
@@ -75,7 +82,7 @@ export const useInitializeAgora = () => {
     rtcEngine.current?.addListener('Error', (error) => {
       console.log('Error', error);
     });
-  }, []);
+  }, [navigation]);
 
   const joinChannel = useCallback(async () => {
     await rtcEngine.current?.joinChannel(token, channelName, null, 0);
