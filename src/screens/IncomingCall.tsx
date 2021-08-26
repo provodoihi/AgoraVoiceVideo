@@ -7,11 +7,11 @@ import {
   ImageBackground,
   Vibration,
 } from 'react-native';
-import { useInitializeAgora, useRequestAudioHook } from './hooks';
-import styles from './styles';
+import { useInitializeAgora, useRequestAudioHook } from '../hooks';
+import styles from '../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-import { AppNavigationProps } from './navigation/routes';
+import { AppNavigationProps } from '../navigation/routes';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
@@ -100,8 +100,8 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
       style={styles.container}
       source={
         joinSucceed
-          ? require('./assets/Empty-Background-01.png')
-          : require('./assets/Gradient-Background-Wallpaper-003.jpg')
+          ? require('../assets/Empty-Background-01.png')
+          : require('../assets/Gradient-Background-Wallpaper-003.jpg')
       }>
       <View style={styles.box1}>
         {joinSucceed ? (
@@ -113,14 +113,14 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
             }}>
             <Image
               style={styles.Icon}
-              source={require('./assets/apples.jpeg')}
+              source={require('../assets/apples.jpeg')}
             />
-            <Image style={styles.Icon} source={require('./assets/wolf.png')} />
+            <Image style={styles.Icon} source={require('../assets/wolf.png')} />
             <Image
               style={styles.Icon}
-              source={require('./assets/fire1.jpeg')}
+              source={require('../assets/fire1.jpeg')}
             />
-            <Image style={styles.Icon} source={require('./assets/bug.jpeg')} />
+            <Image style={styles.Icon} source={require('../assets/bug.jpeg')} />
           </View>
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
@@ -130,7 +130,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
 
         <View style={{ flex: 2, justifyContent: 'flex-end' }}>
           <View>
-            <Image style={styles.ava} source={require('./assets/Rosee.jpeg')} />
+            <Image style={styles.ava} source={require('../assets/Rosee.jpeg')} />
           </View>
         </View>
         <View style={styles.usersListContainer}>
@@ -193,7 +193,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
               <View style={styles.callBox}>
                 <TouchableOpacity onPress={join} style={styles.call}>
                   <Image
-                    source={require('./assets/accept-call.png')}
+                    source={require('../assets/accept-call.png')}
                     resizeMode="contain"
                     style={styles.call}
                   />
@@ -202,7 +202,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
               <View style={styles.callBox}>
                 <TouchableOpacity onPress={decline} style={styles.call}>
                   <Image
-                    source={require('./assets/end-call.png')}
+                    source={require('../assets/end-call.png')}
                     resizeMode="contain"
                     style={styles.call}
                   />
@@ -216,7 +216,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
               onPress={leave}
               style={[styles.call, styles.endcallbtn]}>
               <Image
-                source={require('./assets/end-call.png')}
+                source={require('../assets/end-call.png')}
                 resizeMode="contain"
                 style={styles.call}
               />

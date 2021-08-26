@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import AgoraUIKit from 'agora-rn-uikit';
-import { AppNavigationProps } from './navigation/routes';
+import { AppNavigationProps } from '../navigation/routes';
 
 const VideoCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
   const [videoCall, setVideoCall] = useState(true);
