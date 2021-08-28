@@ -10,8 +10,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import messaging from '@react-native-firebase/messaging';
 // import RNVoipCall from 'react-native-voip-call';
-import { AppNavigationProps } from './navigation/routes';
-import styles from './stylehome';
+import { AppNavigationProps } from '../navigation/routes';
+import styles from '../stylehome';
 
 const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
   const [token, setToken] = useState('');
@@ -83,13 +83,19 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
   return (
     <ImageBackground
       blurRadius={3}
-      source={require('./assets/background.jpeg')}
+      source={require('../assets/background.jpeg')}
       style={styles.container}>
       <View style={styles.box2}>
-        <Image style={styles.call} source={require('./assets/ggvoice.png')} />
+        <Image style={styles.call} source={require('../assets/ggvoice.png')} />
         <Text style={styles.txtBig}>Mr.T Call</Text>
       </View>
       <View style={styles.settingBox}>
+        {/* <TouchableOpacity
+          onPress={() => navigation.navigate('Voice', { token: token })}
+          style={styles.button}>
+          <Icon name="microphone" size={36} color="#fff" />
+        </TouchableOpacity> */}
+
         <TouchableOpacity
           onPress={() => navigation.navigate('Voice', { token: token })}
           style={styles.button}>

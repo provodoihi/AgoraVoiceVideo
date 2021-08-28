@@ -32,6 +32,12 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  textend: {
+    marginTop: '2.5%',
+    color: '#0096FF',
+    fontSize: 14,
+    fontWeight: 'normal',
+  },
   textavaincall: {
     marginTop: '2.5%',
     color: '#ffffff',
@@ -42,6 +48,11 @@ export default StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
+  },
+  iconBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '3%',
   },
   settingBox: {
     alignItems: 'flex-end',
@@ -126,5 +137,14 @@ export default StyleSheet.create({
     margin: '2%',
     marginTop: '5%',
     width: '50%',
+  },
+  border: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',
+    borderColor: '#fff',
+    width: 64,
+    height: 64,
+    borderRadius: 32,
   },
 });

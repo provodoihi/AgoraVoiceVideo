@@ -6,6 +6,7 @@ export type AppRoutes = {
   Voice: { token: string };
   Home: undefined;
   InCall: { channel: string | number[]; token: string };
+  EndCall: undefined;
 };
 
 export interface AppNavigationProps<RouteName extends keyof AppRoutes> {

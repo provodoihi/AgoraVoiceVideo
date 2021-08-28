@@ -11,7 +11,7 @@ export const requestAudioPermission = async () => {
       granted['android.permission.RECORD_AUDIO'] ===
       PermissionsAndroid.RESULTS.GRANTED
     ) {
-      console.log('You can use the mic');
+      // console.log('You can use the mic');
     } else {
       console.log('Permission denied');
     }

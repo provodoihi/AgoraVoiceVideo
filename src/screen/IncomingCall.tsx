@@ -8,14 +8,26 @@ import {
   Vibration,
   ToastAndroid,
 } from 'react-native';
-import { useInitializeAgora, useRequestAudioHook } from './hooks';
-import styles from './styles';
+import { useInitializeAgora, useRequestAudioHook } from '../components/hooks';
+import styles from '../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Stopwatch } from 'react-native-stopwatch-timer';
-import { AppNavigationProps } from './navigation/routes';
+import { AppNavigationProps } from '../navigation/routes';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
+import { responsiveHeight as rh } from 'react-native-responsive-dimensions';
+import Animated, {
+  useAnimatedGestureHandler,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withDelay,
+} from 'react-native-reanimated';
+import {
+  TapGestureHandler,
+  TapGestureHandlerGestureEvent,
+} from 'react-native-gesture-handler';
 
 const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
   useRequestAudioHook();
@@ -54,6 +66,8 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
   const join = () => {
     Vibration.cancel();
     joinChannel();
+    offset.value = 0;
+    offset2.value = 0;
   };
 
   const data = {
@@ -73,9 +87,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
 
   const leave = () => {
     leaveChannel();
-    setTimeout(() => {
-      navigation.navigate('Home');
-    }, 400);
+    navigation.navigate('EndCall');
   };
 
   const decline = async () => {
@@ -84,33 +96,97 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
     navigation.navigate('Home');
   };
 
+  const pressed = useSharedValue(false);
+  const pressed2 = useSharedValue(false);
+  const pressed3 = useSharedValue(false);
+  const offset = useSharedValue(rh(16));
+  const offset2 = useSharedValue(rh(5));
+  const eventHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>(
+    {
+      onStart: () => {
+        pressed.value = true;
+      },
+      onEnd: () => {
+        pressed.value = false;
+      },
+    },
+  );
+  const eventHandler2 = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>(
+    {
+      onStart: () => {
+        pressed2.value = true;
+      },
+      onEnd: () => {
+        pressed2.value = false;
+      },
+    },
+  );
+  const eventHandler3 = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>(
+    {
+      onStart: () => {
+        pressed3.value = true;
+      },
+      onEnd: () => {
+        pressed3.value = false;
+      },
+    },
+  );
+  const ani_style = useAnimatedStyle(() => {
+    return {
+      borderColor: pressed.value ? '#ffffff' : '#ffffff',
+      borderWidth: pressed.value ? 0 : 0,
+      transform: [{ scale: withSpring(pressed.value ? 0.6 : 1) }],
+    };
+  });
+  const ani_style2 = useAnimatedStyle(() => {
+    return {
+      borderColor: pressed2.value ? '#ffffff' : '#ffffff',
+      borderWidth: pressed2.value ? 0 : 0,
+      transform: [{ scale: withSpring(pressed2.value ? 0.6 : 1) }],
+    };
+  });
+  const ani_style3 = useAnimatedStyle(() => {
+    return {
+      borderColor: pressed3.value ? '#ffffff' : '#ffffff',
+      borderWidth: pressed3.value ? 0 : 0,
+      transform: [{ scale: withSpring(pressed3.value ? 0.6 : 1) }],
+    };
+  });
+
+  const ani_box = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: withDelay(1200, withSpring(offset.value)) }],
+    };
+  });
+
+  const ani_box2 = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: withDelay(800, withSpring(offset2.value)) }],
+    };
+  });
+
   return (
     <ImageBackground
       style={styles.container}
       source={
         joinSucceed
-          ? require('./assets/Empty-Background-01.png')
-          : require('./assets/Gradient-Background-Wallpaper-003.jpg')
+          ? require('../assets/Empty-Background-01.png')
+          : require('../assets/Gradient-Background-Wallpaper-003.jpg')
       }>
       <View style={styles.box1}>
         {joinSucceed ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginTop: '3%',
-            }}>
+          <Animated.View style={[styles.iconBox, ani_box2]}>
             <Image
               style={styles.Icon}
-              source={require('./assets/apples.jpeg')}
+              source={require('../assets/apples.jpeg')}
             />
-            <Image style={styles.Icon} source={require('./assets/wolf.png')} />
+            <Image style={styles.Icon} source={require('../assets/wolf.png')} />
             <Image
               style={styles.Icon}
-              source={require('./assets/fire1.jpeg')}
+              source={require('../assets/fire1.jpeg')}
             />
-            <Image style={styles.Icon} source={require('./assets/bug.jpeg')} />
-          </View>
+            <Image style={styles.Icon} source={require('../assets/bug.jpeg')} />
+          </Animated.View>
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
             <Text style={styles.text}>Incoming Call</Text>
@@ -119,7 +195,10 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
 
         <View style={{ flex: 2, justifyContent: 'flex-end' }}>
           <View>
-            <Image style={styles.ava} source={require('./assets/Rosee.jpeg')} />
+            <Image
+              style={styles.ava}
+              source={require('../assets/Rosee.jpeg')}
+            />
           </View>
         </View>
         <View style={styles.usersListContainer}>
@@ -150,7 +229,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
       <View style={styles.box2}>
         {/* when the user join channel success */}
         {joinSucceed ? (
-          <View style={styles.settingBox}>
+          <Animated.View style={[styles.settingBox, ani_box]}>
             <TouchableOpacity onPress={toggleIsMute} style={styles.button}>
               {isMute ? (
                 <Icon name="microphone-slash" size={28} color="#fff" />
@@ -172,44 +251,52 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
                 color={isSpeakerEnable ? '#000000' : '#fff'}
               />
             </TouchableOpacity>
-          </View>
+          </Animated.View>
         ) : (
           <View style={styles.box2} />
         )}
         {joinSucceed === false ? (
           <View style={styles.box3}>
             <View style={styles.settingBox}>
-              <View style={styles.callBox}>
-                <TouchableOpacity onPress={join} style={styles.call}>
-                  <Image
-                    source={require('./assets/accept-call.png')}
-                    resizeMode="contain"
-                    style={styles.call}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={styles.callBox}>
-                <TouchableOpacity onPress={decline} style={styles.call}>
-                  <Image
-                    source={require('./assets/end-call.png')}
-                    resizeMode="contain"
-                    style={styles.call}
-                  />
-                </TouchableOpacity>
-              </View>
+              <TapGestureHandler onGestureEvent={eventHandler}>
+                <Animated.View style={[ani_style, styles.callBox]}>
+                  <TouchableOpacity onPress={join} style={styles.call}>
+                    <Image
+                      source={require('../assets/accept-call.png')}
+                      resizeMode="contain"
+                      style={styles.call}
+                    />
+                  </TouchableOpacity>
+                </Animated.View>
+              </TapGestureHandler>
+              <TapGestureHandler onGestureEvent={eventHandler2}>
+                <Animated.View style={[ani_style2, styles.callBox]}>
+                  <TouchableOpacity onPress={decline} style={styles.call}>
+                    <Image
+                      source={require('../assets/end-call.png')}
+                      resizeMode="contain"
+                      style={styles.call}
+                    />
+                  </TouchableOpacity>
+                </Animated.View>
+              </TapGestureHandler>
             </View>
           </View>
         ) : (
           <View style={styles.callBox}>
-            <TouchableOpacity
-              onPress={leave}
-              style={[styles.call, styles.endcallbtn]}>
-              <Image
-                source={require('./assets/end-call.png')}
-                resizeMode="contain"
-                style={styles.call}
-              />
-            </TouchableOpacity>
+            <TapGestureHandler onGestureEvent={eventHandler3}>
+              <Animated.View style={ani_style3}>
+                <TouchableOpacity
+                  onPress={leave}
+                  style={[styles.call, styles.endcallbtn]}>
+                  <Image
+                    source={require('../assets/end-call.png')}
+                    resizeMode="contain"
+                    style={styles.call}
+                  />
+                </TouchableOpacity>
+              </Animated.View>
+            </TapGestureHandler>
           </View>
         )}
       </View>

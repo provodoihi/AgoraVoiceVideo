@@ -90,6 +90,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
+  border: {
+    height: 72,
+    width: 72,
+    borderRadius: 36,
+  },
 });
 
 export default styles;
