@@ -89,6 +89,7 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
   const pressed = useSharedValue(false);
   const pressed2 = useSharedValue(false);
   const offset = useSharedValue(rh(16));
+  const offset2 = useSharedValue(rh(5));
   const eventHandler = useAnimatedGestureHandler<TapGestureHandlerGestureEvent>(
     {
       onStart: () => {
@@ -123,6 +124,12 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
     };
   });
 
+  const ani_box2 = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: withDelay(800, withSpring(offset2.value)) }],
+    };
+  });
+
   return (
     <ImageBackground
       style={styles.container}
@@ -133,7 +140,7 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
       }>
       <View style={styles.box1}>
         {joinSucceed ? (
-          <View style={styles.iconBox}>
+          <Animated.View style={[styles.iconBox, ani_box2]}>
             <Image
               style={styles.Icon}
               source={require('../assets/apples.jpeg')}
@@ -144,7 +151,7 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
               source={require('../assets/fire1.jpeg')}
             />
             <Image style={styles.Icon} source={require('../assets/bug.jpeg')} />
-          </View>
+          </Animated.View>
         ) : (
           <View style={{ width: '100%', alignItems: 'center' }}>
             <Text style={styles.text}> Calling</Text>
@@ -247,7 +254,7 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
         <View style={styles.callBox}>
           {joinSucceed === false ? (
             <TapGestureHandler onGestureEvent={eventHandler}>
-              <Animated.View style={[ani_style, styles.border]}>
+              <Animated.View style={ani_style}>
                 <TouchableOpacity
                   onPress={() => send_noti()}
                   onPressIn={join}
@@ -262,7 +269,7 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
             </TapGestureHandler>
           ) : (
             <TapGestureHandler onGestureEvent={eventHandler2}>
-              <Animated.View style={[ani_style, styles.border]}>
+              <Animated.View style={ani_style}>
                 <TouchableOpacity
                   onPress={leave}
                   style={[styles.call, styles.endcallbtn]}>

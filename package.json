@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/app": "^12.2.0",
+    "@react-native-firebase/firestore": "^12.7.3",
     "@react-native-firebase/messaging": "^12.2.0",
     "@react-native-picker/picker": "^1.16.3",
     "@react-navigation/native": "^5.9.4",

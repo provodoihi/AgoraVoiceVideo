@@ -12,9 +12,7 @@ const VideoCall = ({ navigation }: AppNavigationProps<'Voice'>) => {
     callbacks: {
       EndCall: () => {
         setVideoCall(false);
-        setTimeout(() => {
-          navigation.navigate('Home');
-        }, 300);
+        navigation.navigate('Home');
       },
     },
   };
