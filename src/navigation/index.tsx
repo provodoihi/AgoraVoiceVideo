@@ -6,13 +6,25 @@ import InCall from '../IncomingCall';
 import VideoCall from '../VideoCall';
 import { AppRoutes } from './routes';
 import Home from '../Home';
+import MyContacts from '../MyContact';
+import CreateContact from '../CreateContact';
+import Profile from '../Profile';
 
 const Stack = createStackNavigator<AppRoutes>();
 
 const AppContainer = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="MyContacts">
+        <Stack.Screen name="MyContacts" component={MyContacts} />
+        <Stack.Screen name="CreateContact" component={CreateContact} />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           options={{ headerShown: false }}
           name="Home"
