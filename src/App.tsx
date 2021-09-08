@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AppContainer from '../navigation/index';
+import AppContainer from './navigation/index';
 import messaging from '@react-native-firebase/messaging';
 
 const App = () => {

@@ -21,7 +21,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 
-import { useInitializeAgora, useRequestAudioHook } from '../hooks';
+import { useInitializeAgora, useRequestAudioHook } from '../components/hooks';
 import { AppNavigationProps } from '../navigation/routes';
 
 const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
@@ -53,9 +53,10 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
 
   const leave = useCallback(() => {
     leaveChannel();
-    setTimeout(() => {
-      navigation.navigate('Home');
-    }, 400);
+    // setTimeout(() => {
+    //   navigation.navigate('EndCall');
+    // }, 400);
+    navigation.navigate('EndCall');
   }, [leaveChannel, navigation]);
 
   useEffect(() => {
@@ -76,7 +77,10 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
             alignItems: 'center',
             marginTop: '3%',
           }}>
-          <Image style={styles.Icon} source={require('../assets/apples.jpeg')} />
+          <Image
+            style={styles.Icon}
+            source={require('../assets/apples.jpeg')}
+          />
           <Image style={styles.Icon} source={require('../assets/wolf.png')} />
           <Image style={styles.Icon} source={require('../assets/fire1.jpeg')} />
           <Image style={styles.Icon} source={require('../assets/bug.jpeg')} />
@@ -84,12 +88,15 @@ const VoiceCall = ({ navigation, route }: AppNavigationProps<'Voice'>) => {
 
         <View style={{ flex: 1, justifyContent: 'flex-end' }}>
           <View>
-            <Image style={styles.ava} source={require('../assets/Rosee.jpeg')} />
+            <Image
+              style={styles.ava}
+              source={require('../assets/Rosee.jpeg')}
+            />
           </View>
         </View>
         <View style={styles.usersListContainer}>
           <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <Text style={styles.textava}> Rosé </Text>
+            <Text style={styles.textava}> {route.params.item.name} </Text>
             {Object.keys(peerIds).length === 2 ? (
               <View style={styles.counterbox}>
                 <Foundation name="sound" size={28} color="#90ee90" />

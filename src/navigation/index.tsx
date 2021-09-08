@@ -7,6 +7,7 @@ import InCall from '../screens/IncomingCall';
 import { AppRoutes } from './routes';
 import Home from '../screens/Home';
 import Detail from '../screens/Detail';
+import EndCall from '../screens/EndCall';
 
 const Stack = createStackNavigator<AppRoutes>();
 
@@ -38,6 +39,11 @@ const AppContainer = () => {
           options={{ headerShown: true }}
           name="Detail"
           component={Detail}
+        />
+        <Stack.Screen
+          options={{ headerShown: false }}
+          name="EndCall"
+          component={EndCall}
         />
       </Stack.Navigator>
     </NavigationContainer>

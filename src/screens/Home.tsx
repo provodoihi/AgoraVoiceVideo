@@ -1,20 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  Text,
-  Image,
-} from 'react-native';
+import { View, TouchableOpacity, Text, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/AntDesign';
 import messaging from '@react-native-firebase/messaging';
 import { FlatList } from 'react-native-gesture-handler';
 import axios from 'axios';
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { useInitializeAgora } from '../hooks';
+import { useInitializeAgora } from '../components/hooks';
 import IpSwipe from '../components/IpSwipe';
 import { AppNavigationProps } from '../navigation/routes';
 import styles from '../stylehome';
+import { color } from 'react-native-reanimated';
 
 interface SwipeableProps {
   item: any;
@@ -29,6 +26,18 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
   const { channelName, joinChannel } = useInitializeAgora();
   const [token, setToken] = useState('');
   const [contact, setContact] = useState(null);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+
+  const checkLaunch = () => {
+    AsyncStorage.getItem('alreadyLaunched').then((value) => {
+      if (value == null) {
+        AsyncStorage.setItem('alreadyLaunched', 'true');
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    });
+  };
 
   const fetchContact = async () => {
     try {
@@ -38,12 +47,13 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
         .get()
         .then((querySnapshot) => {
           querySnapshot.forEach((doc) => {
-            const { name, token, phone } = doc.data();
+            const { name, token, phone, status } = doc.data();
             list.push({
               id: doc.id,
               name: name,
               token: token,
               phone: phone,
+              status: status,
             });
           });
         });
@@ -54,6 +64,7 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
   };
 
   useEffect(() => {
+    checkLaunch();
     fetchContact();
   }, []);
 
@@ -79,7 +90,6 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
 
   useEffect(() => {
     requestUserPermission();
-    console.log(token);
     messaging().onNotificationOpenedApp((remoteMessage) => {
       console.log(
         'Notification caused app to open from background state:',
@@ -117,15 +127,25 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
           token: remoteMessage.data.data,
         });
       }
-      // console.log(
-      //   'Message handle in the foreground',
-      //   remoteMessage.notification,
-      // );
-      // navigation.navigate('InCall', {
-      //   channel: remoteMessage.notification.body,
-      // });
     });
-  }, [navigation, requestUserPermission, token]);
+  }, []);
+
+  if (isFirstLaunch === null) {
+    return null;
+  } else if (isFirstLaunch === true) {
+    firestore()
+      .collection('Contact')
+      .add({
+        name: 'ABC',
+        phone: '0914933512',
+        token: token,
+      })
+      .then(() => {
+        console.log('Contact added!');
+      });
+  } else {
+    console.log('This device already launched');
+  }
 
   const Row = ({ item }: RowProp) => {
     const message = {
@@ -149,21 +169,30 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
         .post(url, message)
         .then(() => {
           joinChannel();
-          navigation.navigate('Voice');
+          navigation.navigate('Voice', { item: item });
         })
         .catch((e) => {
           console.log('call API error', e);
         });
     };
     return (
-      <TouchableOpacity
-        style={styles.rectButton}
-        onPress={() => handleNotification()}>
+      <TouchableOpacity style={styles.rectButton} onPress={handleNotification}>
         <Text style={styles.fromText}>{item.name}</Text>
-        <Text numberOfLines={2} style={styles.messageText}>
-          {item.phone}
-        </Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Detail', {item: item})} style={styles.viewInfo}>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={styles.messageText}>
+            {item.phone}
+          </Text>
+          <Text>  - </Text>
+          <Text style={styles.messageText}>{item.status}</Text>
+        </View>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('Detail', {
+              item: item,
+              message: message,
+            })
+          }
+          style={styles.viewInfo}>
           <Text style={styles.textInfo}>i</Text>
         </TouchableOpacity>
       </TouchableOpacity>

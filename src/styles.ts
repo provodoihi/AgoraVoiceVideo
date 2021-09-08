@@ -4,7 +4,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F8F8F8',
-  }, 
+  },
   box1: {
     flex: 1.2,
     alignItems: 'center',
@@ -12,7 +12,7 @@ export default StyleSheet.create({
   box2: {
     flex: 1,
   },
-   box3: {
+  box3: {
     flex: 1,
   },
   callBox: {
@@ -32,6 +32,12 @@ export default StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  textend: {
+    marginTop: '2.5%',
+    color: '#0096FF',
+    fontSize: 18,
+    fontWeight: 'normal',
+  },
   textavaincall: {
     marginTop: '2.5%',
     color: '#ffffff',
@@ -43,6 +49,11 @@ export default StyleSheet.create({
     height: 70,
     borderRadius: 35,
   },
+  iconBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: '3%',
+  },
   settingBox: {
     alignItems: 'flex-end',
     flex: 1.5,
@@ -51,7 +62,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     marginBottom: '15%',
   },
-   homeBox: {
+  homeBox: {
     alignSelf: 'center',
     flex: 1,
     justifyContent: 'center',
@@ -81,7 +92,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-   homebtn: {
+  homebtn: {
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',

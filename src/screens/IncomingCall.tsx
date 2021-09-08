@@ -7,7 +7,7 @@ import {
   ImageBackground,
   Vibration,
 } from 'react-native';
-import { useInitializeAgora, useRequestAudioHook } from '../hooks';
+import { useInitializeAgora, useRequestAudioHook } from '../components/hooks';
 import styles from '../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Stopwatch } from 'react-native-stopwatch-timer';

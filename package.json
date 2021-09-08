@@ -10,6 +10,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.7",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-firebase/app": "^12.2.0",
     "@react-native-firebase/firestore": "^12.7.2",

@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   fromText: {
     fontWeight: 'bold',
     backgroundColor: 'transparent',
-    fontSize: 20
+    fontSize: 22
   },
   messageText: {
     color: '#999',
