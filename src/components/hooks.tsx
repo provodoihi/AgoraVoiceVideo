@@ -19,13 +19,13 @@ export const useInitializeAgora = () => {
 
   const navigation = useNavigation();
   const [channelName, setChannelName] = useState<string | number[]>(uuid.v4());
-  const [joinSucceed, setJoinSucceed] = useState(false);
+  const [joinSucceed, setJoinSucceed] = useState<boolean>(false);
   const [peerIds, setPeerIds] = useState([]);
-  const [isMute, setIsMute] = useState(false);
-  const [isSpeakerEnable, setIsSpeakerEnable] = useState(true);
+  const [isMute, setIsMute] = useState<boolean>(false);
+  const [isSpeakerEnable, setIsSpeakerEnable] = useState<boolean>(true);
   const rtcEngine = useRef(null);
-  const [isStopwatchStart, setIsStopwatchStart] = useState(false);
-  const [resetStopwatch, setResetStopwatch] = useState(false);
+  const [isStopwatchStart, setIsStopwatchStart] = useState<boolean>(false);
+  const [resetStopwatch, setResetStopwatch] = useState<boolean>(false);
 
   const initAgora = useCallback(async () => {
     rtcEngine.current = await RtcEngine.create(appId);
@@ -35,7 +35,7 @@ export const useInitializeAgora = () => {
     await rtcEngine.current?.setEnableSpeakerphone(true);
 
     // This callback occurs when the remote user successfully joins the channel.
-    rtcEngine.current?.addListener('UserJoined', (uid, elapsed) => {
+    rtcEngine.current?.addListener('UserJoined', (uid: any, elapsed: any) => {
       console.log('UserJoined', uid, elapsed);
 
       setPeerIds((peerIdsLocal) => {
@@ -45,23 +45,20 @@ export const useInitializeAgora = () => {
 
         return peerIdsLocal;
       });
-
+      // start the counter when remote user joins
       setIsStopwatchStart(true);
       setResetStopwatch(false);
     });
 
     // This callback occurs when the remote user leaves the channel or drops offline.
-    rtcEngine.current?.addListener('UserOffline', (uid, reason) => {
+    rtcEngine.current?.addListener('UserOffline', (uid: any, reason: any) => {
       console.log('UserOffline', uid, reason);
-
-      // setPeerIds((peerIdsLocal) => {
-      //   return peerIdsLocal.filter((id) => id !== uid);
-      // });
       setPeerIds([]);
+      // when the remote user leaves, local user auto ends call and leaves too
       setJoinSucceed(false);
       setTimeout(() => {
         navigation.navigate('Home');
-      }, 400);
+      }, 1000);
     });
 
     // This callback occurs when the local user successfully joins the channel.
