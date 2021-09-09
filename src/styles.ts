@@ -15,6 +15,11 @@ export default StyleSheet.create({
   box3: {
     flex: 1,
   },
+  usersListContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   callBox: {
     flex: 1,
     alignItems: 'center',
@@ -77,11 +82,6 @@ export default StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-  },
-  usersListContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   floatRight: {
     height: 56,

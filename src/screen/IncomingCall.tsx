@@ -131,6 +131,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
       },
     },
   );
+  // animation for accept call button
   const ani_style = useAnimatedStyle(() => {
     return {
       borderColor: pressed.value ? '#ffffff' : '#ffffff',
@@ -138,6 +139,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
       transform: [{ scale: withSpring(pressed.value ? 0.6 : 1) }],
     };
   });
+  // animation for reject call button
   const ani_style2 = useAnimatedStyle(() => {
     return {
       borderColor: pressed2.value ? '#ffffff' : '#ffffff',
@@ -145,6 +147,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
       transform: [{ scale: withSpring(pressed2.value ? 0.6 : 1) }],
     };
   });
+  // animation for end call button
   const ani_style3 = useAnimatedStyle(() => {
     return {
       borderColor: pressed3.value ? '#ffffff' : '#ffffff',
@@ -153,12 +156,14 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
     };
   });
 
+  // animation for microphone speaker bar
   const ani_box = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: withDelay(1200, withSpring(offset.value)) }],
     };
   });
 
+  // animation for top icon
   const ani_box2 = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: withDelay(800, withSpring(offset2.value)) }],
@@ -168,11 +173,7 @@ const InCall = ({ navigation, route }: AppNavigationProps<'InCall'>) => {
   return (
     <ImageBackground
       style={styles.container}
-      source={
-        joinSucceed
-          ? require('../assets/Empty-Background-01.png')
-          : require('../assets/Gradient-Background-Wallpaper-003.jpg')
-      }>
+      source={require('../assets/Gradient-Background-Wallpaper-003.jpg')}>
       <View style={styles.box1}>
         {joinSucceed ? (
           <Animated.View style={[styles.iconBox, ani_box2]}>

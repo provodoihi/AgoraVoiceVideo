@@ -1,11 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ImageBackground,
-} from 'react-native';
+import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styles from '../styles';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { AppNavigationProps } from '../navigation/routes';
@@ -19,9 +13,7 @@ const EndCall = ({ navigation }: AppNavigationProps<'EndCall'>) => {
   }, [navigation]);
 
   return (
-    <ImageBackground
-      style={styles.container}
-      source={require('./assets/Empty-Background-01.png')}>
+    <View style={styles.container}>
       <View style={styles.box1}>
         <View style={styles.iconBox}>
           <Image
@@ -75,7 +67,7 @@ const EndCall = ({ navigation }: AppNavigationProps<'EndCall'>) => {
           </TouchableOpacity>
         </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 };
 export default EndCall;

@@ -19,6 +19,7 @@ const TestListScreen = ({ navigation }: AppNavigationProps<'TestList'>) => {
   const new_contact = {
     name: name1,
     token: token1,
+    status: 'Available',
   };
 
   const getData = async () => {

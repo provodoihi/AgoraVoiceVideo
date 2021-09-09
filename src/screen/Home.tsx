@@ -1,20 +1,70 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  ImageBackground,
-  Text,
-  Image,
-} from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { View, TouchableOpacity, Text, FlatList } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
-// import RNVoipCall from 'react-native-voip-call';
+import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { AppNavigationProps } from '../navigation/routes';
 import styles from '../stylehome';
 
+interface RowProp {
+  item: any;
+}
+
 const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
-  const [token, setToken] = useState('');
+  const [data, setData] = useState([]);
+  const [phoneToken, setPhoneToken] = useState('');
+  const [isFirstLaunch, setIsFirstLaunch] = useState(null);
+  const new_contact = {
+    name: 'New User',
+    token: phoneToken,
+    status: 'Available',
+  };
+
+  const checkLaunch = useCallback(() => {
+    AsyncStorage.getItem('alreadyLaunched').then((value) => {
+      if (value == null) {
+        AsyncStorage.setItem('alreadyLaunched', 'true');
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    });
+  }, []);
+
+  const getData = async () => {
+    try {
+      const dataList = [];
+      await firestore()
+        .collection('user_contact')
+        .get()
+        .then((doc) =>
+          doc.forEach((query) => {
+            const { name, token, status } = query.data();
+            dataList.push({
+              id: query.id,
+              name: name,
+              token: token,
+              status: status,
+            });
+          }),
+        );
+      setData(dataList);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getFcmToken = useCallback(async () => {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      console.log('Your Firebase Token is:', fcmToken);
+      setPhoneToken(fcmToken);
+    } else {
+      console.log('Failed', 'No token received');
+    }
+  }, []);
+
   const requestUserPermission = useCallback(async () => {
     const authStatus = await messaging().requestPermission();
     const enabled =
@@ -23,53 +73,12 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
     if (enabled) {
       getFcmToken();
     }
-  }, []);
-
-  const getFcmToken = async () => {
-    const fcmToken = await messaging().getToken();
-    if (fcmToken) {
-      console.log('Your Firebase Token is:', fcmToken);
-      setToken(fcmToken);
-    } else {
-      console.log('Failed', 'No token received');
-    }
-  };
+  }, [getFcmToken]);
 
   useEffect(() => {
     requestUserPermission();
-    console.log(token);
+    console.log(phoneToken);
     const unsubscribe = messaging().onMessage(async (remoteMessage) => {
-      // console.log(channel);
-      // // setChannel(remoteMessage.data.message);
-      // // displayIncommingCall();
-
-      // let callOptions = {
-      //   callerId: remoteMessage.data.message, // Important uuid must in this format
-      //   ios: {
-      //     phoneNumber: '0999999999', // Caller Mobile Number
-      //     name: 'Test', // caller Name
-      //     hasVideo: true,
-      //   },
-      //   android: {
-      //     ringtuneSound: false, // default true
-      //     ringtune: '', // add file inside Project_folder/android/app/res/raw
-      //     duration: 15000, // default 30000
-      //     vibration: true, // default is true
-      //     channel_name: 'Calling', //
-      //     notificationId: 123,
-      //     notificationTitle: 'Incoming Call',
-      //     notificationBody: 'Calling from Agora',
-      //     answerActionTitle: 'Answer',
-      //     declineActionTitle: 'Decline',
-      //     missedCallTitle: 'Call Missed',
-      //     missedCallBody: 'You missed a call',
-      //   },
-      // };
-      // RNVoipCall.displayIncomingCall(callOptions);
-      // RNVoipCall.onCallAnswer(() => {
-      //   navigation.navigate('InCall', { channel: remoteMessage.data.message });
-      //   RNVoipCall.endAllCalls();
-      // });
       if (remoteMessage.notification.title === 'Call') {
         navigation.navigate('InCall', {
           channel: remoteMessage.notification.body,
@@ -78,41 +87,50 @@ const Home = ({ navigation }: AppNavigationProps<'Home'>) => {
       }
     });
     return unsubscribe;
-  }, [navigation, requestUserPermission, token]);
+  }, []);
+
+  useEffect(() => {
+    checkLaunch();
+    getData();
+  }, []);
+
+  if (isFirstLaunch === null) {
+    console.log('Not initialized');
+  } else if (isFirstLaunch === true) {
+    firestore().collection('user_contact').add(new_contact);
+  } else {
+    console.log('This device already launched');
+  }
+
+  const Row = ({ item }: RowProp) => {
+    return (
+      <TouchableOpacity
+        style={styles.rectButton}
+        onPress={() =>
+          navigation.navigate('Detail', {
+            name: item.name,
+            callerToken: phoneToken,
+            calleeToken: item.token,
+          })
+        }>
+        <Text style={styles.fromText}>{item.name}</Text>
+        <Text style={styles.messageText}>{item.status}</Text>
+        <View style={styles.viewInfo}>
+          <Text style={styles.textInfo}>i</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-    <ImageBackground
-      blurRadius={3}
-      source={require('../assets/background.jpeg')}
-      style={styles.container}>
-      <View style={styles.box2}>
-        <Image style={styles.call} source={require('../assets/ggvoice.png')} />
-        <Text style={styles.txtBig}>Mr.T Call</Text>
-      </View>
-      <View style={styles.settingBox}>
-        {/* <TouchableOpacity
-          onPress={() => navigation.navigate('Voice', { token: token })}
-          style={styles.button}>
-          <Icon name="microphone" size={36} color="#fff" />
-        </TouchableOpacity> */}
-
-        <TouchableOpacity
-          onPress={() => navigation.navigate('Voice', { token: token })}
-          style={styles.button}>
-          <Icon name="microphone" size={36} color="#fff" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Video')}>
-          <Ionicons name="videocam" size={36} color="#fff" />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.settingBox2}>
-        <Text style={styles.txt}>Voice Call</Text>
-        <Text style={styles.txt}>Video Call</Text>
-      </View>
-    </ImageBackground>
+    <View style={styles.container}>
+      <FlatList
+        data={data}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        renderItem={({ item }) => <Row item={item} />}
+        keyExtractor={(item) => item.id}
+      />
+    </View>
   );
 };
 
